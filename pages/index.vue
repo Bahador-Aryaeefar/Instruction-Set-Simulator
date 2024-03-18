@@ -14,13 +14,32 @@
                             stroke-linejoin="round" />
                     </svg>
 
-                    <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative">
+                    <div class="w-fit px-4 pb-8 pt-2 bg-arch-white rounded-lg relative">
                         <div class="text-arch-black font-bold text-2xl text-center">AR</div>
                         <ul class="flex mt-2 gap-1">
                             <li v-for="item in [1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1]"
                                 class="w-10 h-10 bg-arch-dark flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
                                 {{ item }}</li>
                         </ul>
+
+                        <div class="absolute top-[7.5rem] left-[2rem] flex-col flex items-center gap-1 text-2xl font-bold">
+                            <div class="w-1.5 h-10 bg-arch-white rounded-b-full"></div>
+                            LD
+                        </div>
+                        <div class="absolute top-[7.5rem] left-[8rem] flex-col flex items-center gap-1 text-2xl font-bold">
+                            <div class="w-1.5 h-10 bg-arch-white rounded-b-full"></div>
+                            INR
+                        </div>
+                        <div class="absolute top-[7.5rem] left-[14rem] flex-col flex items-center gap-1 text-2xl font-bold">
+                            <div class="w-1.5 h-10 bg-arch-white rounded-b-full"></div>
+                            CLR
+                        </div>
+
+                        
+                        <div class="absolute top-[7.5rem] right-[2rem] flex-col flex items-center gap-1 text-2xl font-bold">
+                            <div class="w-1.5 h-10 bg-arch-white rounded-b-full"></div>
+                            CLK
+                        </div>
                     </div>
 
                     <div class="h-1 w-[20rem] bg-arch-white"></div>
