@@ -9,7 +9,7 @@
 
 <style>
 :root {
-    font-size: 10px;
+    font-size: 12px;
 }
 body {
     background-color: #0b0c10;
