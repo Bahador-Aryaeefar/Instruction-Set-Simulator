@@ -1,5 +1,6 @@
 <template>
     <div>
+        <MainNavbar></MainNavbar>
         <slot />
     </div>
 </template>
@@ -9,9 +10,16 @@
 
 <style>
 :root {
-    font-size: 12px;
+    font-size: 8px;
 }
+
 body {
     background-color: #0b0c10;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
 }
 </style>
