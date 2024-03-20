@@ -39,7 +39,7 @@
 
             <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative">
                 <div class="text-arch-black font-bold text-2xl text-center">3x8 Decoder</div>
-                <ul class="flex mt-2 bg-arch-gray rounded-lg p-1">
+                <ul class="flex flex-row-reverse mt-2 bg-arch-gray rounded-lg p-1">
                     <li v-for="item, index in [1, 1, 1, 1, 1, 1, 1, 1]" class="">
                         <div class="text-2xl text-center">T{{ index }}</div>
                         <div class="h-1 w-8 mx-auto bg-arch-white mb-2 rounded-full"></div>
@@ -52,7 +52,7 @@
             </div>
 
             <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative ml-[10rem]">
-                <div class="text-arch-black font-bold text-2xl text-center">IR(12-14)</div>
+                <div class="text-arch-black font-bold text-2xl text-center">IR(14-12)</div>
                 <ul class="flex mt-2 bg-arch-gray rounded-lg p-1">
                     <li v-for="item in [1, 1, 1]"
                         class="w-10 h-10 bg-arch-dark flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
@@ -71,7 +71,7 @@
 
             <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative">
                 <div class="text-arch-black font-bold text-2xl text-center">3x8 Decoder</div>
-                <ul class="flex mt-2 bg-arch-gray rounded-lg p-1">
+                <ul class="flex flex-row-reverse mt-2 bg-arch-gray rounded-lg p-1">
                     <li v-for="item, index in [1, 1, 1, 1, 1, 1, 1, 1]" class="">
                         <div class="text-2xl text-center">D{{ index }}</div>
                         <div class="h-1 w-8 mx-auto bg-arch-white mb-2 rounded-full"></div>
