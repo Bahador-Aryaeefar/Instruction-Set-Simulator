@@ -90,9 +90,9 @@
                     class="bg-arch-white pb-1 px-2 text-arch-black text-2xl font-bold rounded-lg flex flex-col items-center">
                     <div>E</div>
                     <div class="flex bg-arch-gray rounded-lg p-1">
-                        <div
-                            class="w-10 h-10 bg-arch-dark flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
-                            0</div>
+                        <div :class="bitColor(data.e)"
+                            class="w-10 h-10 flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
+                            {{ data.e.value }}</div>
                     </div>
                 </div>
             </div>
@@ -109,7 +109,7 @@
         <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative">
             <div class="text-arch-black font-bold text-2xl text-center">AC</div>
             <ul class="flex mt-2 bg-arch-gray rounded-lg p-1">
-                <li v-for="item in [1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]"
+                <li v-for="item in data.ac.value" :class="bitColor(data.ac)"
                     class="w-10 h-10 bg-arch-dark flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
                     {{ item }}</li>
             </ul>
@@ -151,3 +151,7 @@
         </div>
     </div>
 </template>
+
+<script setup>
+const { data, bitColor } = useArch()
+</script>

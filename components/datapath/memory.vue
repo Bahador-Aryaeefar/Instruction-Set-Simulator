@@ -9,16 +9,72 @@
         </svg>
 
         <div class="relative">
-            <div class="bg-arch-white min-h-[20rem] h-[22rem] overflow-hidden rounded-lg px-4 pt-3 pb-8 flex-col flex"
+            <div class="bg-arch-white min-h-[20rem] h-[28rem] overflow-hidden rounded-lg px-4 pt-3 pb-8 flex-col flex"
                 style="resize: vertical;">
                 <div class="text-arch-black font-bold text-2xl text-center">Memory Unit</div>
-                <ul class="bg-arch-gray border-[0.5rem] border-arch-gray rounded-lg mt-3 overflow-y-scroll overflow-x-hidden">
-                    <li v-for="item, index in mem" class="flex gap-2 p-1 text-xl">
-                        <span class="self-center w-10 text-center text-2xl font-bold">{{ toHex(index, 3)
+                <ul
+                    class="flex bg-arch-gray border-[0.5rem] border-arch-gray rounded-t-lg text-2xl font-bold text-center text-white gap-1 mt-3">
+                    <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 0 ? 'bg-arch-dark' : ''"
+                        @click="index = 0">000</li>
+                    <div class="self-strech bg-white w-1 rounded-full"></div>
+                    <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 1 ? 'bg-arch-dark' : ''"
+                        @click="index = 1">100</li>
+                    <div class="self-strech bg-white w-1 rounded-full"></div>
+                    <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 2 ? 'bg-arch-dark' : ''"
+                        @click="index = 2">200</li>
+                    <div class="self-strech bg-white w-1 rounded-full"></div>
+                    <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 3 ? 'bg-arch-dark' : ''"
+                        @click="index = 3">300</li>
+                    <div class="self-strech bg-white w-1 rounded-full"></div>
+                    <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 4 ? 'bg-arch-dark' : ''"
+                        @click="index = 4">400</li>
+                    <div class="self-strech bg-white w-1 rounded-full"></div>
+                    <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 5 ? 'bg-arch-dark' : ''"
+                        @click="index = 5">500</li>
+                    <div class="self-strech bg-white w-1 rounded-full"></div>
+                    <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 6 ? 'bg-arch-dark' : ''"
+                        @click="index = 6">600</li>
+                    <div class="self-strech bg-white w-1 rounded-full"></div>
+                    <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 7 ? 'bg-arch-dark' : ''"
+                        @click="index = 7">700</li>
+                </ul>
+                <div class="bg-arch-gray border-[0.5rem] border-arch-gray -my-2">
+                    <div class="h-1 bg-white rounded-full"></div>
+                </div>
+                <ul
+                    class="flex bg-arch-gray border-[0.5rem] border-arch-gray rounded-b-lg text-2xl font-bold text-center text-white gap-1">
+                    <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 8 ? 'bg-arch-dark' : ''"
+                        @click="index = 8">700</li>
+                    <div class="self-strech bg-white w-1 rounded-full"></div>
+                    <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 9 ? 'bg-arch-dark' : ''"
+                        @click="index = 9">800</li>
+                    <div class="self-strech bg-white w-1 rounded-full"></div>
+                    <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 10 ? 'bg-arch-dark' : ''"
+                        @click="index = 10">900</li>
+                    <div class="self-strech bg-white w-1 rounded-full"></div>
+                    <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 11 ? 'bg-arch-dark' : ''"
+                        @click="index = 11">A00</li>
+                    <div class="self-strech bg-white w-1 rounded-full"></div>
+                    <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 12 ? 'bg-arch-dark' : ''"
+                        @click="index = 12">B00</li>
+                    <div class="self-strech bg-white w-1 rounded-full"></div>
+                    <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 13 ? 'bg-arch-dark' : ''"
+                        @click="index = 13">C00</li>
+                    <div class="self-strech bg-white w-1 rounded-full"></div>
+                    <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 14 ? 'bg-arch-dark' : ''"
+                        @click="index = 14">D00</li>
+                    <div class="self-strech bg-white w-1 rounded-full"></div>
+                    <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 15 ? 'bg-arch-dark' : ''"
+                        @click="index = 15">E00</li>
+                </ul>
+                <ul
+                    class="bg-arch-gray border-[0.5rem] border-arch-gray rounded-lg mt-3 overflow-y-scroll overflow-x-hidden">
+                    <li v-for="item in mem" class="flex gap-2 p-1 text-xl">
+                        <span class="self-center w-10 text-center text-2xl font-bold">{{ toHex(item.address, 3)
                             }}</span>
                         <div class="self-strech w-1 rounded-full bg-arch-white"></div>
                         <ul class="flex">
-                            <li v-for="item2 in item"
+                            <li v-for="item2 in item.value" :class="bitColor(item)"
                                 class="w-10 h-10 bg-arch-dark flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
                                 {{ item2 }}</li>
                         </ul>
@@ -64,10 +120,16 @@
 </template>
 
 <script setup>
-let mem = ref([])
-for (let i = 0; i < 40; i++) {
-    mem.value[i] = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-}
+const { data } = useArch()
+const index = ref(0)
+let mem = computed(() => {
+    let temp = []
+    for (let i = index.value * 256; i < index.value * 256 + 256; i++) {
+        let val = data.value.memory.find((x) => x?.address == i)?.value
+        temp.push({ address: i, value: val ?? "0000000000000000", default: !Boolean(val) })
+    }
+    return temp
+})
 
 const toHex = (num, pad) => {
     let hex = num.toString(16)
@@ -75,5 +137,10 @@ const toHex = (num, pad) => {
         hex = "0" + hex
     }
     return hex.toUpperCase()
+}
+
+const bitColor = (bit) => {
+    if (bit.default) return "bg-gray-500"
+    else return "bg-arch-dark"
 }
 </script>

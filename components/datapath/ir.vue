@@ -11,8 +11,8 @@
         <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative">
             <div class="text-arch-black font-bold text-2xl text-center">IR</div>
             <ul class="flex mt-2 bg-arch-gray rounded-lg p-1">
-                <li v-for="item in [1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1]"
-                    class="w-10 h-10 bg-arch-dark flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
+                <li v-for="item in data.ir.value" :class="bitColor(data.ir)"
+                    class="w-10 h-10 flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
                     {{ item }}</li>
             </ul>
 
@@ -39,3 +39,7 @@
         </div>
     </div>
 </template>
+
+<script setup>
+const { data, bitColor } = useArch()
+</script>

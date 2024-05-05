@@ -4,8 +4,8 @@
             <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative">
                 <div class="text-arch-black font-bold text-2xl text-center">SC</div>
                 <ul class="flex mt-2 bg-arch-gray rounded-lg p-1">
-                    <li v-for="item in [1, 1, 1]"
-                        class="w-10 h-10 bg-arch-dark flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
+                    <li v-for="item in data.sc.value" :class="bitColor(data.sc)"
+                        class="w-10 h-10 flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
                         {{ item }}</li>
                 </ul>
 
@@ -39,12 +39,12 @@
 
             <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative">
                 <div class="text-arch-black font-bold text-2xl text-center">3x8 Decoder</div>
-                <ul class="flex flex-row-reverse mt-2 bg-arch-gray rounded-lg p-1">
-                    <li v-for="item, index in [1, 1, 1, 1, 1, 1, 1, 1]" class="">
-                        <div class="text-2xl text-center">T{{ index }}</div>
+                <ul class="flex mt-2 bg-arch-gray rounded-lg p-1">
+                    <li v-for="item, index in t" class="">
+                        <div class="text-2xl text-center">T{{ 7 - index }}</div>
                         <div class="h-1 w-8 mx-auto bg-arch-white mb-2 rounded-full"></div>
-                        <div
-                            class="w-10 h-10 bg-arch-dark flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
+                        <div :class="bitColor(data.sc)"
+                            class="w-10 h-10 flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
                             {{ item }}
                         </div>
                     </li>
@@ -54,8 +54,8 @@
             <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative ml-[10rem]">
                 <div class="text-arch-black font-bold text-2xl text-center">IR(14-12)</div>
                 <ul class="flex mt-2 bg-arch-gray rounded-lg p-1">
-                    <li v-for="item in [1, 1, 1]"
-                        class="w-10 h-10 bg-arch-dark flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
+                    <li v-for="item in data.ir.value.slice(1,4)" :class="bitColor(data.ir)"
+                        class="w-10 h-10 flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
                         {{ item }}</li>
                 </ul>
             </div>
@@ -71,12 +71,12 @@
 
             <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative">
                 <div class="text-arch-black font-bold text-2xl text-center">3x8 Decoder</div>
-                <ul class="flex flex-row-reverse mt-2 bg-arch-gray rounded-lg p-1">
-                    <li v-for="item, index in [1, 1, 1, 1, 1, 1, 1, 1]" class="">
-                        <div class="text-2xl text-center">D{{ index }}</div>
+                <ul class="flex mt-2 bg-arch-gray rounded-lg p-1">
+                    <li v-for="item, index in d" class="">
+                        <div class="text-2xl text-center">D{{ 7 - index }}</div>
                         <div class="h-1 w-8 mx-auto bg-arch-white mb-2 rounded-full"></div>
-                        <div
-                            class="w-10 h-10 bg-arch-dark flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
+                        <div :class="bitColor(data.ir)"
+                            class="w-10 h-10 flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
                             {{ item }}
                         </div>
                     </li>
@@ -85,3 +85,53 @@
         </div>
     </div>
 </template>
+
+<script setup>
+const { data, bitColor } = useArch()
+
+const t = computed(() => {
+    switch (parseInt(data.value.sc.value, 2)) {
+        case 0:
+            return "00000001"
+        case 1:
+            return "00000010"
+        case 2:
+            return "00000100"
+        case 3:
+            return "00001000"
+        case 4:
+            return "00010000"
+        case 5:
+            return "00100000"
+        case 6:
+            return "01000000"
+        case 7:
+            return "10000000"
+        default:
+            return "00000000"
+    }
+})
+
+const d = computed(() => {
+    switch (parseInt(data.value.ir.value.slice(1,4), 2)) {
+        case 0:
+            return "00000001"
+        case 1:
+            return "00000010"
+        case 2:
+            return "00000100"
+        case 3:
+            return "00001000"
+        case 4:
+            return "00010000"
+        case 5:
+            return "00100000"
+        case 6:
+            return "01000000"
+        case 7:
+            return "10000000"
+        default:
+            return "00000000"
+    }
+})
+</script>

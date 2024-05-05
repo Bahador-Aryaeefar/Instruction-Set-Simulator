@@ -1,6 +1,6 @@
 <template>
     <div
-        class="border-r-[0.5rem] border-arch-black bg-arch-white p-4  self-strech w-[40rem] fixed z-[2] h-[calc(100dvh-7rem)] left-0 top-[7rem] flex flex-col">
+        class="border-r-[0.5rem] border-arch-black bg-arch-white p-4 h-full flex flex-col">
         <div class="py-4 bg-arch-white text-[3rem] font-bold">
             <div class="w-fit mx-auto">Code Editor</div>
             <button @click="assemble"
@@ -12,18 +12,17 @@
                     index + 1 }}.</li>
             </ul>
             <div class="gap-6 px-6 pl-[8rem] pt-4 h-full">
-                <textarea v-model="code" style="resize: none;"
+                <textarea v-model="code" style="resize: none;" @input="(event) => {code = event.target.value; useArch().asm.value = code}"
                     :style="`height: ${lineCount.length * 4 + 3}rem; width: ${(maxLine + 1) * 2}rem;`"
                     class="uppercase min-h-[calc(100%-1rem)] leading-[4rem] min-w-full focus:outline-none bg-transparent text-arch-white text-[2.5rem] font-bold placeholder:text-[#a9a9a9]"
                     placeholder=""></textarea>
             </div>
         </div>
     </div>
-    <div class="self-strech w-[40rem] shrink-0"></div>
 </template>
 
 <script setup>
-const code = ref("")
+const code = ref(useArch().asm.value)
 const assemble = () => {
     code.value = code.value.toUpperCase()
     let labels = []
@@ -65,8 +64,9 @@ const assemble = () => {
                 alert("ORG needs a hex value")
                 return
             }
-        }
-        else {
+        } else if (line.inst[0] == "END") {
+            break
+        } else {
             line.num = num
             set.push(line)
             if(label) labels.push({ label, num })
@@ -148,14 +148,14 @@ const assemble = () => {
                     return
                 }
                 if (line.inst[0] == "DEC" && !isNaN(parseInt(line.inst[1], 10))) {
-                    num = parseInt(line.inst[1], 10).toString(2)
+                    num = (parseInt(line.inst[1], 10) >>> 0).toString(2)
                 } else if (line.inst[0] == "HEX" && !isNaN(parseInt(line.inst[1], 16))) {
-                    num = parseInt(line.inst[1], 16).toString(2)
+                    num = (parseInt(line.inst[1], 16)>>> 0).toString(2)
                 } else {
                     alert(`line ${line.line}: '${line.inst[0]} ${line.inst[1]}' is not a valid number`)
                     return
                 }
-
+                if(line.inst[1][0] == '-') num = num.slice(16)
                 if (num.length > 16) {
                     alert(`line ${line.line}: '${line.inst[1]}' is more than 'HEX FFFF'`)
                     return
@@ -213,6 +213,8 @@ const assemble = () => {
         set[index] = line
     }
     console.log(set);
+    useArch().reset()
+    for(let item of set) useArch().data.value.memory.push({address: item.num, value: item.code}) 
 }
 
 const lineCount = computed(() => code.value.split("\n"))
