@@ -44,28 +44,28 @@
                 <ul
                     class="flex bg-arch-gray border-[0.5rem] border-arch-gray rounded-b-lg text-2xl font-bold text-center text-white gap-1">
                     <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 8 ? 'bg-arch-dark' : ''"
-                        @click="index = 8">700</li>
+                        @click="index = 8">800</li>
                     <div class="self-strech bg-white w-1 rounded-full"></div>
                     <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 9 ? 'bg-arch-dark' : ''"
-                        @click="index = 9">800</li>
+                        @click="index = 9">900</li>
                     <div class="self-strech bg-white w-1 rounded-full"></div>
                     <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 10 ? 'bg-arch-dark' : ''"
-                        @click="index = 10">900</li>
+                        @click="index = 10">A00</li>
                     <div class="self-strech bg-white w-1 rounded-full"></div>
                     <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 11 ? 'bg-arch-dark' : ''"
-                        @click="index = 11">A00</li>
+                        @click="index = 11">B00</li>
                     <div class="self-strech bg-white w-1 rounded-full"></div>
                     <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 12 ? 'bg-arch-dark' : ''"
-                        @click="index = 12">B00</li>
+                        @click="index = 12">C00</li>
                     <div class="self-strech bg-white w-1 rounded-full"></div>
                     <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 13 ? 'bg-arch-dark' : ''"
-                        @click="index = 13">C00</li>
+                        @click="index = 13">D00</li>
                     <div class="self-strech bg-white w-1 rounded-full"></div>
                     <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 14 ? 'bg-arch-dark' : ''"
-                        @click="index = 14">D00</li>
+                        @click="index = 14">E00</li>
                     <div class="self-strech bg-white w-1 rounded-full"></div>
                     <li class="grow w-[1rem] rounded-lg cursor-pointer" :class="index == 15 ? 'bg-arch-dark' : ''"
-                        @click="index = 15">E00</li>
+                        @click="index = 15">F00</li>
                 </ul>
                 <ul
                     class="bg-arch-gray border-[0.5rem] border-arch-gray rounded-lg mt-3 overflow-y-scroll overflow-x-hidden">
