@@ -1,7 +1,10 @@
 <template>
     <div class="border-r-[0.5rem] border-arch-black bg-arch-white p-4 h-full flex flex-col">
+        <div class="text-[2.5rem] text-center font-bold mt-10">
+            Instruction
+        </div>
         <div
-            class="bg-arch-gray border-[0.5rem] border-arch-black overflow-auto relative font-bold leading-[4rem] text-[2.25rem] text-arch-white px-6 py-4 whitespace-nowrap">
+            class="bg-arch-gray border-[0.5rem] border-arch-black overflow-auto relative font-bold leading-[4rem] text-[2.25rem] text-arch-white px-6 py-4 whitespace-nowrap mt-6">
             {{ data }}
         </div>
     </div>
