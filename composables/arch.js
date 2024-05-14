@@ -52,5 +52,10 @@ export const useArch = () => {
         else return "bg-arch-dark"
     }
 
-    return { set, editor, asm, data, reset, bitColor }
+    const addZero = (num, length) => {
+        while (num.length < length) { num = "0" + num }
+        return num
+    }
+
+    return { set, editor, asm, data, reset, bitColor, addZero }
 }
