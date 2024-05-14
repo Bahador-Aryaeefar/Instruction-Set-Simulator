@@ -1,10 +1,10 @@
 <template>
     <div class="flex items-center relative">
-        <div class="h-2 w-[8rem] bg-arch-white grow"></div>
+        <div class="h-2 w-[8rem] grow" :class="sigColor(data.memory.write)"></div>
 
-        <svg class="w-14 -ml-9 -mr-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg class="w-14 -ml-9 -mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8.95011 19.9201L15.4701 13.4001C16.2401 12.6301 16.2401 11.3701 15.4701 10.6001L8.95011 4.08008"
-                stroke="#C5C6C7" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
+                :stroke="getColor(data.memory.write)" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
                 stroke-linejoin="round" />
         </svg>
 
@@ -82,36 +82,39 @@
                 </ul>
             </div>
 
-            <div class="absolute -bottom-[4.75rem] left-[8rem] flex-col flex items-center gap-1 text-2xl font-bold">
-                <div class="w-2 h-10 bg-arch-white rounded-b-full"></div>
+            <div class="absolute -bottom-[4.75rem] left-[8rem] flex-col flex items-center gap-1 text-2xl font-bold"
+                :class="textColor(data.memory.read)">
+                <div class="w-2 h-10 rounded-b-full" :class="sigColor(data.memory.read)"></div>
                 Read
             </div>
 
-            <div class="absolute -bottom-[4.75rem] right-[8rem] flex-col flex items-center gap-1 text-2xl font-bold">
-                <div class="w-2 h-10 bg-arch-white rounded-b-full"></div>
+            <div class="absolute -bottom-[4.75rem] right-[8rem] flex-col flex items-center gap-1 text-2xl font-bold"
+                :class="textColor(data.memory.write)">
+                <div class="w-2 h-10 rounded-b-full" :class="sigColor(data.memory.write)"></div>
                 Write
             </div>
         </div>
 
-        <div class="h-2 w-[24rem] bg-arch-white"></div>
+        <div class="h-2 w-[24rem]" :class="sigColor(false)"></div>
 
         <svg class="w-14 -ml-9 -mr-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8.95011 19.9201L15.4701 13.4001C16.2401 12.6301 16.2401 11.3701 15.4701 10.6001L8.95011 4.08008"
-                stroke="#C5C6C7" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
+                :stroke="getColor(false)" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
                 stroke-linejoin="round" />
         </svg>
 
-        <div class="absolute right-[10rem] bottom-0 w-2 h-[6rem] bg-arch-white"></div>
+        <div class="absolute right-[10rem] bottom-0 w-2 h-[6rem]"
+            :class="sigColor(data.memory.write || data.memory.read)"></div>
         <div class="flex items-center absolute right-[10rem] bottom-[4.25rem]">
-            <svg class="w-14 rotate-180 -ml-4 -mr-9" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg class="w-14 rotate-180 -ml-4 -mr-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                     d="M8.95011 19.9201L15.4701 13.4001C16.2401 12.6301 16.2401 11.3701 15.4701 10.6001L8.95011 4.08008"
-                    stroke="#C5C6C7" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
-                    stroke-linejoin="round" />
+                    :stroke="getColor(data.memory.write || data.memory.read)" stroke-width="3" stroke-miterlimit="10"
+                    stroke-linecap="round" stroke-linejoin="round" />
             </svg>
-            <div class="w-[14rem] h-2 bg-arch-white"></div>
+            <div class="w-[14rem] h-2" :class="sigColor(data.memory.write || data.memory.read)"></div>
 
-            <div class="absolute right-16 top-10 text-arch-white text-2xl font-bold">Address</div>
+            <div class="absolute right-16 top-10 text-2xl font-bold" :class="textColor(data.memory.write || data.memory.read)">Address</div>
         </div>
 
         <div class="absolute top-0 bottom-0 my-auto -right-11 text-arch-black text-[3rem] font-bold h-fit">7
@@ -120,12 +123,12 @@
 </template>
 
 <script setup>
-const { data } = useArch()
+const { data, sigColor, textColor, getColor } = useArch()
 const index = ref(0)
 let mem = computed(() => {
     let temp = []
     for (let i = index.value * 256; i < index.value * 256 + 256; i++) {
-        let val = data.value.memory.find((x) => x?.address == i)?.value
+        let val = data.value.memory.value.find((x) => x?.address == i)?.value
         temp.push({ address: i, value: val ?? "0000000000000000", default: !Boolean(val) })
     }
     return temp

@@ -214,7 +214,7 @@ const assemble = () => {
     }
     console.log(set);
     useArch().reset()
-    for(let item of set) useArch().data.value.memory.push({address: item.num, value: item.code}) 
+    for(let item of set) useArch().data.value.memory.value.push({address: item.num, value: item.code}) 
 }
 
 const lineCount = computed(() => code.value.split("\n"))
