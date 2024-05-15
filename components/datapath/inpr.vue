@@ -9,7 +9,7 @@
                     class="w-10 h-10 flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
                     {{ item }}</li>
 
-                <div class="h-2 w-[41.5rem] bg-arch-white grow absolute top-0 bottom-0 my-auto right-[22.5rem]">
+                <div class="h-2 w-[41.5rem] grow absolute top-0 bottom-0 my-auto right-[22.5rem]" :class="sigColor(data.alu == 5)">
                 </div>
             </ul>
         </div>
@@ -19,5 +19,5 @@
 </template>
 
 <script setup>
-const { data, bitColor } = useArch()
+const { data, bitColor, sigColor } = useArch()
 </script>

@@ -95,11 +95,11 @@
             </div>
         </div>
 
-        <div class="h-2 w-[24rem]" :class="sigColor(false)"></div>
+        <div class="h-2 w-[24rem]" :class="sigColor(parseInt(data.bus.value,2) == 7 && data.bus.changed)"></div>
 
-        <svg class="w-14 -ml-9 -mr-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg class="w-14 -ml-9 -mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8.95011 19.9201L15.4701 13.4001C16.2401 12.6301 16.2401 11.3701 15.4701 10.6001L8.95011 4.08008"
-                :stroke="getColor(false)" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
+                :stroke="getColor(parseInt(data.bus.value,2) == 7 && data.bus.changed)" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
                 stroke-linejoin="round" />
         </svg>
 
@@ -117,13 +117,13 @@
             <div class="absolute right-16 top-10 text-2xl font-bold" :class="textColor(data.memory.write || data.memory.read)">Address</div>
         </div>
 
-        <div class="absolute top-0 bottom-0 my-auto -right-11 text-arch-black text-[3rem] font-bold h-fit">7
+        <div class="absolute top-0 bottom-0 my-auto -right-11 text-[3rem] font-bold h-fit" :class="busColor(parseInt(data.bus.value,2) == 7 && data.bus.changed)">7
         </div>
     </div>
 </template>
 
 <script setup>
-const { data, sigColor, textColor, getColor } = useArch()
+const { data, sigColor, textColor, getColor, busColor } = useArch()
 const index = ref(0)
 let mem = computed(() => {
     let temp = []
