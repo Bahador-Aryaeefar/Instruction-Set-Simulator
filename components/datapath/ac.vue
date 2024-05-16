@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center pt-[9rem] relative">
+    <div class="flex items-center pt-[9rem] relative z-[1]">
         <div class="w-[20rem] grow"></div>
 
         <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative">
@@ -78,8 +78,8 @@
                 </div>
             </div>
 
-            <div class="absolute left-[17rem] top-0 flex items-center">
-                <div class="h-2 w-[4rem]" :class="sigColor(data.e.changed)"></div>
+            <div class="absolute left-[16.5rem] top-0 flex items-center z-[-1]">
+                <div class="h-2 w-[4.5rem]" :class="sigColor(data.e.changed)"></div>
 
                 <svg class="w-14 -ml-9 -mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path

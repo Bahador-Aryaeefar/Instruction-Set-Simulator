@@ -51,7 +51,7 @@
 
         <div class="absolute right-[20rem] top-[10.25rem] flex flex-col">
             <div class="h-[9.75rem] w-2 self-end" :class="sigColor([1, 2, 4].includes(data.alu))"></div>
-            <div class="w-[82rem] h-2" :class="sigColor([1, 2, 4].includes(data.alu))"></div>
+            <div class="w-[82.5rem] h-2" :class="sigColor([1, 2, 4].includes(data.alu))"></div>
         </div>
         <div class="absolute top-[8rem] -right-11 text-[3rem] font-bold h-fit"
             :class="busColor(parseInt(data.bus.value, 2) == 3 && data.bus.changed)">3

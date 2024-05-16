@@ -9,9 +9,9 @@
                         {{ item }}</li>
                 </ul>
 
-                <div class="absolute bottom-[7rem] left-0 flex-col flex items-center gap-1 text-2xl font-bold" :class="textColor(data.sc.ld)">
+                <div class="absolute bottom-[7rem] left-0 flex-col flex items-center gap-1 text-2xl font-bold" :class="textColor(data.sc.inr)">
                     INR
-                    <div class="w-2 h-7 rounded-t-full" :class="sigColor(data.sc.ld)"></div>
+                    <div class="w-2 h-7 rounded-t-full" :class="sigColor(data.sc.inr)"></div>
                 </div>
                 <div :class="textColor(data.sc.clr)"
                     class="absolute bottom-[7rem] left-0 right-0 mx-auto flex-col flex items-center gap-1 text-2xl font-bold">

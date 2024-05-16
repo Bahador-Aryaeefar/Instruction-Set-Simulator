@@ -1,10 +1,10 @@
 <template>
     <div class="border-r-[0.5rem] border-arch-black bg-arch-white p-4 h-full flex flex-col">
-        <div class="text-[2.5rem] text-center font-bold mt-10">
-            Instruction
+        <div class="text-[3rem] font-bold mx-auto py-4">
+            Simulator
         </div>
         <div
-            class="h-[50rem] bg-arch-gray border-[0.5rem] border-arch-black overflow-auto relative font-bold leading-[4rem] text-[2.25rem] text-arch-white px-6 py-4 whitespace-nowrap mt-6">
+            class="h-[50rem] bg-arch-gray border-[0.5rem] border-arch-black overflow-auto relative font-bold leading-[4rem] text-[2.25rem] text-arch-white px-6 py-4 whitespace-nowrap">
             <div v-html="current.logic"></div>
             <div v-for="item in current.micros" v-html="item"></div>
         </div>
@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-const { data, addZero } = useArch()
+const { data, addZero, clear } = useArch()
 
 const toHex = (num, pad) => {
     let hex = num.toString(16)
@@ -30,32 +30,9 @@ const d = computed(() => parseInt(data.value.ir.value.slice(1, 4), 2))
 
 const b = computed(() => parseInt(data.value.ir.value.slice(4, 16), 2))
 
-const micros = {
-    D7IpT3B4: "",
-    D7IpT3B3: "<br/>",
-    D7IpT3B2: "<br/>)",
-    D7IpT3B1: "If (E = 0)<br/>then (PC &#10229; PC + 1)",
-    D7IpT3B0: "S &#10229; 0",
-}
-
 const current = ref({ logic: "", micros: [] })
 const pulse = () => {
-    data.value.s.changed = false
-    data.value.i.changed = false
-    data.value.r.changed = false
-    data.value.ien.changed = false
-    data.value.fgi.changed = false
-    data.value.fgo.changed = false
-    data.value.ar.changed = false
-    data.value.pc.changed = false
-    data.value.dr.changed = false
-    data.value.e.changed = false
-    data.value.ac.changed = false
-    data.value.inpr.changed = false
-    data.value.ir.changed = false
-    data.value.tr.changed = false
-    data.value.outr.changed = false
-    data.value.sc.changed = false
+    clear()
 
     current.value = { logic: "", micros: [] }
 
@@ -69,8 +46,12 @@ const pulse = () => {
                 current.value.micros.push("AR &#10229; PC")
 
                 data.value.ar.value = data.value.pc.value
+                data.value.ar.ld = true
                 data.value.ar.default = false
                 data.value.ar.changed = true
+
+                data.value.bus.value = "010"
+                data.value.bus.changed = true
                 break
             case 1:
                 current.value.logic += "T<sub>1</sub>"
@@ -81,10 +62,16 @@ const pulse = () => {
                 data.value.ir.value = (data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2))?.value ?? "0000000000000000")
                 data.value.ir.default = false
                 data.value.ir.changed = true
+                data.value.ir.ld = true
+                data.value.memory.read = true
+                data.value.bus.value = "111"
+                data.value.bus.changed = true
+
 
                 data.value.pc.value = addZero((parseInt(data.value.pc.value, 2) + 1).toString(2), 12)
                 data.value.pc.default = false
                 data.value.pc.changed = true
+                data.value.pc.inr = true
                 break
             case 2:
                 current.value.logic += "T<sub>2</sub>"
@@ -94,6 +81,9 @@ const pulse = () => {
                 data.value.ar.value = data.value.ir.value.slice(4, 16)
                 data.value.ar.default = false
                 data.value.ar.changed = true
+                data.value.ar.ld = true
+                data.value.bus.value = "101"
+                data.value.bus.changed = true
 
                 data.value.i.value = data.value.ir.value.slice(0, 1)
                 data.value.i.default = false
@@ -125,23 +115,25 @@ const pulse = () => {
                                 case 2:
                                     current.value.logic += "B<sub>1</sub>"
                                     current.value.micros.push("If (E = 0)")
-                                    current.value.micros.push("then (PC &#10229; PC + 1")
+                                    current.value.micros.push("then (PC &#10229; PC + 1)")
 
                                     if (data.value.e.value == "0") {
                                         data.value.pc.value = addZero((parseInt(data.value.pc.value, 2) + 1).toString(2), 12)
                                         data.value.pc.default = false
                                         data.value.pc.changed = true
+                                        data.value.pc.inr = true
                                     }
                                     break;
                                 case 4:
                                     current.value.logic += "B<sub>2</sub>"
                                     current.value.micros.push("If (AC = 0)")
-                                    current.value.micros.push("then (PC &#10229; PC + 1")
+                                    current.value.micros.push("then (PC &#10229; PC + 1)")
 
                                     if (data.value.ac.value == "0000000000000000") {
                                         data.value.pc.value = addZero((parseInt(data.value.pc.value, 2) + 1).toString(2), 12)
                                         data.value.pc.default = false
                                         data.value.pc.changed = true
+                                        data.value.pc.inr = true
                                     }
                                     break;
                                 case 8:
@@ -153,6 +145,7 @@ const pulse = () => {
                                         data.value.pc.value = addZero((parseInt(data.value.pc.value, 2) + 1).toString(2), 12)
                                         data.value.pc.default = false
                                         data.value.pc.changed = true
+                                        data.value.pc.inr = true
                                     }
                                     break;
                                 case 16:
@@ -164,6 +157,7 @@ const pulse = () => {
                                         data.value.pc.value = addZero((parseInt(data.value.pc.value, 2) + 1).toString(2), 12)
                                         data.value.pc.default = false
                                         data.value.pc.changed = true
+                                        data.value.pc.inr = true
                                     }
                                     break;
                                 case 32:
@@ -172,14 +166,15 @@ const pulse = () => {
 
                                     data.value.ac.value = (parseInt(data.value.ac.value, 2) + 1).toString(2)
                                     if (data.value.ac.value.length == 17) {
-                                        data.value.e.value = data.value.ac.value.slice(0, 1)
+                                        // data.value.e.value = data.value.ac.value.slice(0, 1)
                                         data.value.ac.value = data.value.ac.value.slice(1, 17)
-                                        data.value.e.default = false
-                                        data.value.e.changed = true
+                                        // data.value.e.default = false
+                                        // data.value.e.changed = true
                                     }
                                     data.value.ac.value = addZero(data.value.ac.value, 16)
                                     data.value.ac.default = false
                                     data.value.ac.changed = true
+                                    data.value.ac.inr = true
                                     break;
                                 case 64:
                                     current.value.logic += "B<sub>6</sub>"
@@ -190,7 +185,8 @@ const pulse = () => {
                                     temp = data.value.e.value
                                     data.value.e.value = data.value.ac.value.slice(0, 1)
                                     data.value.ac.value = data.value.ac.value.slice(1, 16) + temp
-
+                                    data.value.ac.ld = true
+                                    data.value.alu = 7
 
                                     data.value.e.default = false
                                     data.value.e.changed = true
@@ -206,6 +202,8 @@ const pulse = () => {
                                     temp = data.value.e.value
                                     data.value.e.value = data.value.ac.value.slice(15, 16)
                                     data.value.ac.value = temp + data.value.ac.value.slice(0, 15)
+                                    data.value.ac.ld = true
+                                    data.value.alu = 6
 
 
                                     data.value.e.default = false
@@ -228,6 +226,8 @@ const pulse = () => {
                                     data.value.ac.value = data.value.ac.value.split('').map(x => x === "0" ? "1" : "0").join('')
                                     data.value.ac.default = false
                                     data.value.ac.changed = true
+                                    data.value.ac.ld = true
+                                    data.value.alu = 3
                                     break;
                                 case 1024:
                                     current.value.logic += "B<sub>10</sub>"
@@ -244,6 +244,7 @@ const pulse = () => {
                                     data.value.ac.value = "0000000000000000"
                                     data.value.ac.default = false
                                     data.value.ac.changed = true
+                                    data.value.ac.clr = true
                                     break;
                                 default:
                             }
@@ -252,6 +253,7 @@ const pulse = () => {
                             data.value.sc.value = "000"
                             data.value.sc.default = false
                             data.value.sc.changed = true
+                            data.value.sc.clr = true
                             return
                         }
                     }
@@ -265,5 +267,6 @@ const pulse = () => {
     data.value.sc.value = addZero((parseInt(data.value.sc.value, 2) + 1).toString(2), 3)
     if (parseInt(data.value.sc.value, 2) > 7) data.value.sc.value = '000'
     data.value.sc.changed = true
+    data.value.sc.inr = true
 }
 </script>

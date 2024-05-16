@@ -20,8 +20,8 @@ export const useArch = () => {
         ir: { value: "0000000000000000", changed: false, default: true, ld: false, inr: false, clr: false },
         tr: { value: "0000000000000000", changed: false, default: true, ld: false, inr: false, clr: false },
         outr: { value: "00000000", changed: false, default: true, ld: false },
-        sc: { value: "000", changed: false, default: true, ld: false, inr: false, clr: false },
-        bus: {value: "000", changed: false, default: true}
+        sc: { value: "000", changed: false, default: true, inr: false, clr: false },
+        bus: { value: "000", changed: false, default: true }
     }))
 
     const reset = () => {
@@ -44,7 +44,31 @@ export const useArch = () => {
             tr: { value: "0000000000000000", changed: false, default: true, ld: false, inr: false, clr: false },
             outr: { value: "00000000", changed: false, default: true, ld: false },
             sc: { value: "000", changed: false, default: true, ld: false, inr: false, clr: false },
-            bus: {value: "000", changed: false, default: true}
+            bus: { value: "000", changed: false, default: true }
+        }
+    }
+
+    const clear = () => {
+        data.value = {
+            s: { ...data.value.s, changed: false },
+            i: { ...data.value.i, changed: false },
+            r: { ...data.value.r, changed: false },
+            ien: { ...data.value.ien, changed: false },
+            fgi: { ...data.value.fgi, changed: false },
+            fgo: { ...data.value.fgo, changed: false },
+            memory: { ...data.value.memory, read: false, write: false },
+            ar: { ...data.value.ar, changed: false, ld: false, inr: false, clr: false },
+            pc: { ...data.value.pc, changed: false, ld: false, inr: false, clr: false },
+            dr: { ...data.value.dr, changed: false, ld: false, inr: false, clr: false },
+            alu: 0,
+            e: { ...data.value.e, changed: false },
+            ac: { ...data.value.ac, changed: false, ld: false, inr: false, clr: false },
+            inpr: { ...data.value.inpr, changed: false },
+            ir: { ...data.value.ir, changed: false, ld: false, inr: false, clr: false },
+            tr: { ...data.value.tr, changed: false, ld: false, inr: false, clr: false },
+            outr: { ...data.value.outr, changed: false, ld: false },
+            sc: { ...data.value.sc, changed: false, inr: false, clr: false },
+            bus: { ...data.value.bus, changed: false }
         }
     }
 
@@ -69,7 +93,7 @@ export const useArch = () => {
         else return "text-arch-black"
     }
 
-    const getColor =  (sig) => {
+    const getColor = (sig) => {
         if (sig) return "#b91c1c"
         else return "#C5C6C7"
     }
@@ -79,5 +103,5 @@ export const useArch = () => {
         return num
     }
 
-    return { set, editor, asm, data, reset, bitColor, addZero, sigColor, textColor, getColor, busColor }
+    return { set, editor, asm, data, reset, bitColor, addZero, sigColor, textColor, getColor, busColor, clear }
 }

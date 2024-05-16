@@ -74,10 +74,10 @@
                             }}</span>
                         <div class="self-strech w-1 rounded-full bg-arch-white"></div>
                         <ul class="flex">
-                            <li v-for="item2 in item.value" :class="bitColor(item)"
+                            <li v-for="item2 in item.value" :class="(((data.memory.read || data.memory.write) &&  parseInt(data.ar.value,2) == item.address) ? 'border-1 border-red-700 ' : '' ) + bitColor(item)"
                                 class="w-10 h-10 bg-arch-dark flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
                                 {{ item2 }}</li>
-                        </ul>
+                        </ul> 
                     </li>
                 </ul>
             </div>
@@ -106,7 +106,7 @@
         <div class="absolute right-[10rem] bottom-0 w-2 h-[6rem]"
             :class="sigColor(data.memory.write || data.memory.read)"></div>
         <div class="flex items-center absolute right-[10rem] bottom-[4.25rem]">
-            <svg class="w-14 rotate-180 -ml-4 -mr-10" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg class="w-14 rotate-180 -ml-3 -mr-9" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                     d="M8.95011 19.9201L15.4701 13.4001C16.2401 12.6301 16.2401 11.3701 15.4701 10.6001L8.95011 4.08008"
                     :stroke="getColor(data.memory.write || data.memory.read)" stroke-width="3" stroke-miterlimit="10"
