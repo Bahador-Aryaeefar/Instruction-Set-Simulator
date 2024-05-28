@@ -10,19 +10,40 @@
         </div>
         <button @click="pulse"
             class="rounded-full text-[2.5rem] bg-arch-gray border-[0.5rem] font-bold border-arch-black w-[10rem] h-[10rem] flex items-center justify-center text-arch-white mx-auto mt-10">Pulse</button>
+
+        <div class="mt-10">
+            <div class="text-[3rem] font-bold text-center py-4">
+                INPUT
+            </div>
+
+            <div></div>
+            <input type="text" v-model="input"
+                class="w-full rounded-[2rem] bg-arch-gray border-[0.5rem] border-arch-black focus:outline-none font-bold leading-[4rem] text-[2.25rem] text-arch-white px-6 py-4 whitespace-nowrap">
+
+            <button @click="enter"
+                class="rounded-full text-[2.5rem] bg-arch-gray border-[0.5rem] font-bold border-arch-black w-[10rem] h-[10rem] flex items-center justify-center text-arch-white mx-auto mt-10">Enter</button>
+        </div>
+
+        <div class="mt-10">
+            <div class="text-[3rem] font-bold text-center py-4">
+                OUTPUT
+            </div>
+
+            <div></div>
+            <div
+                class="w-full rounded-[2rem] bg-arch-gray border-[0.5rem] border-arch-black focus:outline-none font-bold leading-[4rem] text-[2.25rem] text-arch-white px-6 py-4 whitespace-nowrap">
+                {{ parseInt(data.outr.value,2) }}
+            </div>
+        </div>
     </div>
 </template>
 
 <script setup>
 const { data, addZero, clear } = useArch()
 
-const toHex = (num, pad) => {
-    let hex = num.toString(16)
-    while (hex.length < pad) {
-        hex = "0" + hex
-    }
-    return hex.toUpperCase()
-}
+const input = ref("")
+
+const interrupt = ref(false)
 
 const t = computed(() => parseInt(data.value.sc.value, 2))
 
@@ -31,13 +52,98 @@ const d = computed(() => parseInt(data.value.ir.value.slice(1, 4), 2))
 const b = computed(() => parseInt(data.value.ir.value.slice(4, 16), 2))
 
 const current = ref({ logic: "", micros: [] })
+
+const enter = () => {
+    if (data.value.fgi.value == "1") {
+        alert("FGI flip flop has to be 0")
+        return
+    }
+
+    if (parseInt(input.value) && parseInt(input.value) < 256 && parseInt(input.value) >= 0) {
+        data.value.inpr.value = addZero(parseInt(input.value).toString(2), 8)
+        data.value.inpr.changed = true
+        data.value.inpr.default = false
+        data.value.fgi.value = "1"
+        data.value.fgi.changed = true
+        data.value.fgi.default = false
+    } else {
+        alert("Input has to be a number between 0 and 255")
+    }
+}
+
 const pulse = () => {
     clear()
 
     current.value = { logic: "", micros: [] }
 
-    if (data.value.r.value == "1") {
+    if (data.value.s.value == "0") return
 
+    if (data.value.r.value == "1") {
+        current.value.logic += "R"
+        switch (t.value) {
+            case 0:
+                current.value.logic += "T<sub>0</sub>"
+                current.value.micros.push("AR &#10229; 0")
+                current.value.micros.push("TR &#10229; PC")
+
+                data.value.ar.value = "000000000000"
+                data.value.ar.changed = true
+                data.value.ar.default = false
+                data.value.ar.clr = true
+
+                data.value.tr.value = addZero(data.value.pc.value, 16)
+                data.value.tr.changed = true
+                data.value.tr.default = false
+                data.value.tr.ld = true
+                data.value.bus.value = "010"
+                data.value.bus.changed = true
+                data.value.bus.default = false
+                break
+            case 1:
+                current.value.logic += "T<sub>1</sub>"
+                current.value.micros.push("M[AR] &#10229; TR")
+                current.value.micros.push("PC &#10229; 0")
+
+
+                if (data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2))) data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2)).value = data.value.tr.value
+                else data.value.memory.value.push({ address: parseInt(data.value.ar.value, 2), value: data.value.tr.value })
+
+                data.value.memory.write = true
+                data.value.bus.value = "110"
+                data.value.bus.changed = true
+                data.value.bus.default = false
+
+                data.value.pc.value = "000000000000"
+                data.value.pc.changed = true
+                data.value.pc.default = false
+                data.value.pc.clr = true
+                break
+            case 2:
+                current.value.logic += "T<sub>1</sub>"
+                current.value.micros.push("PC &#10229; PC + 1")
+                current.value.micros.push("IEN &#10229; 0")
+                current.value.micros.push("R &#10229; 0")
+                current.value.micros.push("SC &#10229; 0")
+
+                data.value.pc.value = addZero((parseInt(data.value.pc.value, 2) + 1).toString(2), 12)
+                data.value.pc.changed = true
+                data.value.pc.default = false
+                data.value.pc.inr = true
+
+                data.value.ien.value = "0"
+                data.value.ien.changed = true
+                data.value.ien.default = false
+
+                data.value.r.value = "0"
+                data.value.r.changed = true
+                data.value.r.default = false
+
+                data.value.sc.value = "000"
+                data.value.sc.changed = true
+                data.value.sc.default = false
+                data.value.sc.clr = true
+                return
+        }
     } else {
         current.value.logic += "R'"
         switch (t.value) {
@@ -52,6 +158,7 @@ const pulse = () => {
 
                 data.value.bus.value = "010"
                 data.value.bus.changed = true
+                data.value.bus.default = false
                 break
             case 1:
                 current.value.logic += "T<sub>1</sub>"
@@ -66,6 +173,7 @@ const pulse = () => {
                 data.value.memory.read = true
                 data.value.bus.value = "111"
                 data.value.bus.changed = true
+                data.value.bus.default = false
 
 
                 data.value.pc.value = addZero((parseInt(data.value.pc.value, 2) + 1).toString(2), 12)
@@ -84,6 +192,7 @@ const pulse = () => {
                 data.value.ar.ld = true
                 data.value.bus.value = "101"
                 data.value.bus.changed = true
+                data.value.bus.default = false
 
                 data.value.i.value = data.value.ir.value.slice(0, 1)
                 data.value.i.default = false
@@ -91,12 +200,98 @@ const pulse = () => {
 
                 break
             default:
+                if (data.value.ien.value == "1" && (data.value.fgi.value == "1" || data.value.fgo.value == "1")) {
+                    interrupt.value = true
+                    data.value.r.value = "1"
+                    data.value.r.changed = true
+                    data.value.r.default = false
+                }
                 if (d.value == 7) {
                     current.value.logic += "D<sub>7</sub>"
                     if (data.value.i.value == '1') {
                         current.value.logic += "I"
                         if (t.value = 3) {
                             current.value.logic += "T<sub>3</sub>"
+                            switch (b.value) {
+                                case 64:
+                                    current.value.logic += "B<sub>6</sub>"
+                                    current.value.micros.push("IEN &#10229; 0")
+
+                                    data.value.ien.value = "0";
+                                    data.value.ien.default = false
+                                    data.value.ien.changed = true
+                                    break
+                                case 128:
+                                    current.value.logic += "B<sub>7</sub>"
+                                    current.value.micros.push("IEN &#10229; 1")
+
+                                    data.value.ien.value = "1";
+                                    data.value.ien.default = false
+                                    data.value.ien.changed = true
+                                    break
+                                case 256:
+                                    current.value.logic += "B<sub>8</sub>"
+                                    current.value.micros.push("If (FGO = 1)")
+                                    current.value.micros.push("Then (PC &#10229; PC + 1)")
+
+                                    if (data.value.fgo.value == "1") {
+                                        data.value.pc.value = addZero((parseInt(data.value.pc.value, 2) + 1).toString(2), 12)
+                                        data.value.pc.default = false
+                                        data.value.pc.changed = true
+                                        data.value.pc.inr = true
+                                    }
+                                    break
+                                case 512:
+                                    current.value.logic += "B<sub>9</sub>"
+                                    current.value.micros.push("If (FGI = 1)")
+                                    current.value.micros.push("Then (PC &#10229; PC + 1)")
+
+                                    if (data.value.fgi.value == "1") {
+                                        data.value.pc.value = addZero((parseInt(data.value.pc.value, 2) + 1).toString(2), 12)
+                                        data.value.pc.default = false
+                                        data.value.pc.changed = true
+                                        data.value.pc.inr = true
+                                    }
+                                    break
+                                case 1024:
+                                    current.value.logic += "B<sub>10</sub>"
+                                    current.value.micros.push("OUTR &#10229; AC(0-7)")
+                                    current.value.micros.push("FGO &#10229; 0")
+
+                                    data.value.outr.value = data.value.ac.value.slice(8, 17)
+                                    data.value.outr.default = false
+                                    data.value.outr.changed = true
+                                    data.value.outr.ld = true
+                                    data.value.bus.value = '100'
+                                    data.value.bus.changed = true
+                                    data.value.bus.default = false
+
+                                    data.value.fgo.value = "0"
+                                    data.value.fgo.changed = true
+                                    break
+                                case 2048:
+                                    current.value.logic += "B<sub>11</sub>"
+                                    current.value.micros.push("AC(0-7) &#10229; INPR")
+                                    current.value.micros.push("FGI &#10229; 0")
+
+                                    data.value.ac.value = addZero(data.value.inpr.value, 16)
+                                    data.value.ac.changed = true
+                                    data.value.ac.default = false
+                                    data.value.ac.ld = true
+
+                                    data.value.alu = 5
+
+                                    data.value.fgi.value = "0"
+                                    data.value.fgi.changed = true
+                                    break
+                            }
+
+                            current.value.micros.push("SC &#10229; 0")
+                            data.value.sc.value = "000"
+                            data.value.sc.default = false
+                            data.value.sc.changed = true
+                            data.value.sc.clr = true
+                            return
                         }
                     }
                     else {
@@ -257,10 +452,304 @@ const pulse = () => {
                             return
                         }
                     }
-                } else {
-                    current.value.logic += "D<sub>7</sub>'"
                 }
+                else {
+                    // current.value.logic += "D<sub>7</sub>'"
+                    if (t.value == 3) {
+                        current.value.logic += "T<sub>3</sub>"
+                        if (data.value.i.value == '1') {
+                            current.value.logic += "I"
+                            current.value.micros.push("AR &#10229; M[AR]")
 
+                            data.value.ar.value = (data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2))?.value.slice(4, 17) ?? "000000000000")
+                            data.value.ar.default = false
+                            data.value.ar.changed = true
+                            data.value.ar.ld = true
+                            data.value.memory.read = true
+                            data.value.bus.value = '111'
+                            data.value.bus.changed = true
+                            data.value.bus.default = false
+                        }
+                        else {
+                            current.value.logic += "I'"
+                            current.value.micros.push("-")
+                        }
+                    }
+                    else {
+                        switch (d.value) {
+                            case 0:
+                                current.value.logic += "D<sub>0</sub>"
+                                switch (t.value) {
+                                    case 4:
+                                        current.value.logic += "T<sub>4</sub>"
+                                        current.value.micros.push("DR &#10229; M[AR]")
+
+                                        data.value.dr.value = (data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2))?.value ?? "0000000000000000")
+                                        data.value.dr.default = false
+                                        data.value.dr.changed = true
+                                        data.value.dr.ld = true
+                                        data.value.memory.read = true
+                                        data.value.bus.value = '111'
+                                        data.value.bus.changed = true
+                                        data.value.bus.default = false
+                                        break;
+                                    case 5:
+                                        current.value.logic += "T<sub>5</sub>"
+
+                                        current.value.micros.push("AC &#10229; AC ^ DR")
+                                        current.value.micros.push("SC &#10229; 0")
+
+                                        data.value.ac.value = data.value.ac.value.split('').map((x, index) => (x == "1" && x == data.value.dr.value[index]) ? "1" : "0").join('')
+                                        data.value.ac.default = false
+                                        data.value.ac.changed = true
+                                        data.value.ac.ld = true
+                                        data.value.alu = 1
+
+                                        data.value.sc.value = "000"
+                                        data.value.sc.default = false
+                                        data.value.sc.changed = true
+                                        data.value.sc.clr = true
+                                        return
+                                }
+                                break;
+                            case 1:
+                                current.value.logic += "D<sub>1</sub>"
+                                switch (t.value) {
+                                    case 4:
+                                        current.value.logic += "T<sub>4</sub>"
+                                        current.value.micros.push("DR &#10229; M[AR]")
+
+                                        data.value.dr.value = (data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2))?.value ?? "0000000000000000")
+                                        data.value.dr.default = false
+                                        data.value.dr.changed = true
+                                        data.value.dr.ld = true
+                                        data.value.memory.read = true
+                                        data.value.bus.value = '111'
+                                        data.value.bus.changed = true
+                                        data.value.bus.default = false
+
+                                        break
+                                    case 5:
+                                        current.value.logic += "T<sub>5</sub>"
+                                        current.value.micros.push("AC &#10229; AC + DR")
+                                        current.value.micros.push("E &#10229; C<sub> out</sub>")
+                                        current.value.micros.push("SC &#10229; 0")
+
+
+
+                                        data.value.ac.value = (parseInt(data.value.ac.value, 2) + parseInt(data.value.dr.value, 2)).toString(2)
+                                        if (data.value.ac.value.length == 17) {
+                                            data.value.e.value = data.value.ac.value.slice(0, 1)
+                                            data.value.ac.value = data.value.ac.value.slice(1, 17)
+                                            data.value.e.default = false
+                                            data.value.e.changed = true
+                                        }
+                                        data.value.ac.value = addZero(data.value.ac.value, 16)
+
+                                        data.value.ac.default = false
+                                        data.value.ac.changed = true
+                                        data.value.ac.ld = true
+                                        data.value.alu = 2
+
+                                        data.value.sc.value = "000"
+                                        data.value.sc.default = false
+                                        data.value.sc.changed = true
+                                        data.value.sc.clr = true
+                                        return
+                                }
+                                break;
+                            case 2:
+                                current.value.logic += "D<sub>2</sub>"
+                                switch (t.value) {
+                                    case 4:
+                                        current.value.logic += "T<sub>4</sub>"
+                                        current.value.micros.push("DR &#10229; M[AR]")
+
+                                        data.value.dr.value = (data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2))?.value ?? "0000000000000000")
+                                        data.value.dr.default = false
+                                        data.value.dr.changed = true
+                                        data.value.dr.ld = true
+                                        data.value.memory.read = true
+                                        data.value.bus.value = '111'
+                                        data.value.bus.changed = true
+                                        data.value.bus.default = false
+
+                                        break
+                                    case 5:
+                                        current.value.logic += "T<sub>5</sub>"
+                                        current.value.micros.push("AC &#10229; DR")
+                                        current.value.micros.push("SC &#10229; 0")
+
+                                        data.value.ac.value = data.value.dr.value
+                                        data.value.ac.default = false
+                                        data.value.ac.changed = true
+                                        data.value.ac.ld = true
+                                        data.value.alu = 4
+
+                                        data.value.sc.value = "000"
+                                        data.value.sc.default = false
+                                        data.value.sc.changed = true
+                                        data.value.sc.clr = true
+                                        return
+                                }
+                                break;
+                            case 3:
+                                current.value.logic += "D<sub>3</sub>"
+                                switch (t.value) {
+                                    case 4:
+                                        current.value.logic += "T<sub>4</sub>"
+                                        current.value.micros.push("M[AR] &#10229; AC")
+                                        current.value.micros.push("SC &#10229; 0")
+
+                                        if (data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2))) data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2)).value = data.value.ac.value
+                                        else data.value.memory.value.push({ address: parseInt(data.value.ar.value, 2), value: data.value.ac.value })
+
+                                        data.value.memory.write = true
+                                        data.value.bus.value = '100'
+                                        data.value.bus.changed = true
+                                        data.value.bus.default = false
+
+                                        data.value.sc.value = "000"
+                                        data.value.sc.default = false
+                                        data.value.sc.changed = true
+                                        data.value.sc.clr = true
+                                        return
+                                }
+                                break;
+                            case 4:
+                                current.value.logic += "D<sub>4</sub>"
+                                switch (t.value) {
+                                    case 4:
+                                        current.value.logic += "T<sub>4</sub>"
+                                        current.value.micros.push("PC &#10229; AR")
+                                        current.value.micros.push("SC &#10229; 0")
+
+                                        data.value.pc.value = data.value.ar.value
+                                        data.value.pc.default = false
+                                        data.value.pc.changed = true
+                                        data.value.pc.ld = true
+
+                                        data.value.bus.value = '001'
+                                        data.value.bus.changed = true
+                                        data.value.bus.default = false
+
+                                        data.value.sc.value = "000"
+                                        data.value.sc.default = false
+                                        data.value.sc.changed = true
+                                        data.value.sc.clr = true
+                                        return
+                                }
+                                break;
+                            case 5:
+                                current.value.logic += "D<sub>5</sub>"
+                                switch (t.value) {
+                                    case 4:
+                                        current.value.logic += "T<sub>4</sub>"
+                                        current.value.micros.push("M[AR] &#10229; PC")
+
+                                        if (data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2))) data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2)).value = addZero(data.value.pc.value, 16)
+                                        else data.value.memory.value.push({ address: parseInt(data.value.ar.value, 2), value: addZero(data.value.pc.value, 16) })
+
+                                        data.value.memory.write = true
+                                        data.value.bus.value = '010'
+                                        data.value.bus.changed = true
+                                        data.value.bus.default = false
+                                        break
+                                    case 5:
+                                        current.value.logic += "T<sub>5</sub>"
+                                        current.value.micros.push("AR &#10229; AR + 1")
+                                        current.value.micros.push("PC &#10229; AR")
+                                        current.value.micros.push("SC &#10229; 0")
+
+                                        data.value.ar.value = (parseInt(data.value.ar.value, 2) + 1).toString(2)
+                                        if (data.value.ar.value.length == 13) {
+                                            data.value.ar.value = data.value.ar.value.slice(1, 13)
+                                        }
+                                        data.value.ar.value = addZero(data.value.ar.value, 12)
+                                        data.value.ar.default = false
+                                        data.value.ar.changed = true
+                                        data.value.ar.inr = true
+
+                                        data.value.pc.value = data.value.ar.value
+                                        data.value.pc.changed = true
+                                        data.value.pc.default = false
+                                        data.value.pc.ld = true
+                                        data.value.bus.value = '001'
+                                        data.value.bus.changed = true
+                                        data.value.bus.default = false
+
+                                        data.value.sc.value = "000"
+                                        data.value.sc.default = false
+                                        data.value.sc.changed = true
+                                        data.value.sc.clr = true
+                                        return
+                                }
+                                break;
+                            case 6:
+                                current.value.logic += "D<sub>6</sub>"
+                                switch (t.value) {
+                                    case 4:
+                                        current.value.logic += "T<sub>4</sub>"
+                                        current.value.micros.push("DR &#10229; M[AR]")
+
+                                        data.value.dr.value = (data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2))?.value ?? "0000000000000000")
+                                        data.value.dr.default = false
+                                        data.value.dr.changed = true
+                                        data.value.dr.ld = true
+                                        data.value.memory.read = true
+                                        data.value.bus.value = '111'
+                                        data.value.bus.changed = true
+                                        data.value.bus.default = false
+                                        break
+                                    case 5:
+                                        current.value.logic += "T<sub>5</sub>"
+                                        current.value.micros.push("DR &#10229; DR + 1")
+
+                                        data.value.dr.value = (parseInt(data.value.dr.value, 2) + 1).toString(2)
+                                        if (data.value.dr.value.length == 17) {
+                                            data.value.dr.value = data.value.dr.value.slice(1, 17)
+                                        }
+                                        data.value.dr.value = addZero(data.value.dr.value, 16)
+                                        data.value.dr.default = false
+                                        data.value.dr.changed = true
+                                        data.value.dr.inr = true
+                                        break
+                                    case 6:
+                                        current.value.logic += "T<sub>6</sub>"
+                                        current.value.micros.push("M[AR] &#10229; DR")
+                                        current.value.micros.push("If (DR = 0)")
+                                        current.value.micros.push("Then (PC &#10229; PC + 1)")
+                                        current.value.micros.push("SC &#10229; 0")
+
+                                        if (data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2))) data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2)).value = data.value.dr.value
+                                        else data.value.memory.value.push({ address: parseInt(data.value.ar.value, 2), value: data.value.dr.value })
+
+                                        data.value.memory.write = true
+                                        data.value.bus.value = '011'
+                                        data.value.bus.changed = true
+                                        data.value.bus.default = false
+
+                                        if (data.value.dr.value == "0000000000000000") {
+                                            data.value.pc.value = (parseInt(data.value.pc.value, 2) + 1).toString(2)
+                                            if (data.value.pc.value.length == 13) {
+                                                data.value.pc.value = data.value.pc.value.slice(1, 13)
+                                            }
+                                            data.value.pc.value = addZero(data.value.pc.value, 12)
+                                            data.value.pc.default = false
+                                            data.value.pc.changed = true
+                                            data.value.pc.inr = true
+                                        }
+
+                                        data.value.sc.value = "000"
+                                        data.value.sc.default = false
+                                        data.value.sc.changed = true
+                                        data.value.sc.clr = true
+                                        return
+                                }
+                                break;
+                        }
+                    }
+                }
         }
     }
 

@@ -1,5 +1,5 @@
 <template>
-    <div class="absolute left-[5rem] top-[6rem]">
+    <div class="absolute left-[5rem] top-[6rem] z-[1]">
         <div class="flex gap-4">
             <div
                 class="bg-arch-white pb-1 px-2 text-arch-black text-2xl font-bold rounded-lg flex flex-col items-center">
