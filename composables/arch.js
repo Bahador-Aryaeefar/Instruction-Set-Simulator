@@ -2,6 +2,7 @@ export const useArch = () => {
     const editor = useState("editor", () => true)
     const asm = useState("asm", () => "")
     const set = useState("set", () => [])
+    const current = useState("current", () => ({ logic: "", micros: [] }))
     const data = useState("data", () => ({
         s: { value: "0", changed: false, default: true },
         i: { value: "0", changed: false, default: true },
@@ -103,5 +104,5 @@ export const useArch = () => {
         return num
     }
 
-    return { set, editor, asm, data, reset, bitColor, addZero, sigColor, textColor, getColor, busColor, clear }
+    return { set, editor, asm, current, data, reset, bitColor, addZero, sigColor, textColor, getColor, busColor, clear }
 }
