@@ -108,7 +108,7 @@
                 stroke-linejoin="round" />
         </svg>
 
-        <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative">
+        <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative z-[1]">
             <div class="text-arch-black font-bold text-2xl text-center">AC</div>
             <ul class="flex mt-2 bg-arch-gray rounded-lg p-1">
                 <li v-for="item in data.ac.value" :class="bitColor(data.ac)"

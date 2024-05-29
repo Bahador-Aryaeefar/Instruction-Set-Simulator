@@ -1,47 +1,74 @@
 <template>
     <div class="border-r-[0.5rem] border-arch-black bg-arch-white p-4 h-full flex flex-col">
-        <div class="text-[3rem] font-bold mx-auto py-4">
-            Simulator
+        <div class="text-[3rem] font-bold py-4 bg-arch-dark w-full text-center border-[0.5rem] border-arch-black border-b-0 rounded-t-[2rem]"
+            v-html="current.logic || '-'">
         </div>
         <div
-            class="h-[50rem] bg-arch-gray border-[0.5rem] border-arch-black overflow-auto relative font-bold leading-[4rem] text-[2.25rem] text-arch-white px-6 py-4 whitespace-nowrap">
-            <div v-html="current.logic"></div>
-            <div v-for="item in current.micros" v-html="item"></div>
+            class="min-h-[30rem] bg-arch-gray border-[0.5rem] border-arch-black overflow-auto relative font-bold leading-[4rem] text-[2.25rem] text-arch-white whitespace-nowrap">
+            <div v-for="item in current.micros" v-html="item"
+                class="text-center text-[2.5rem] bg-blue-300 text-red-700 border-b-[0.5rem] border-arch-black py-4">
+            </div>
         </div>
         <button @click="pulse"
-            class="rounded-full text-[2.5rem] bg-arch-gray border-[0.5rem] font-bold border-arch-black w-[10rem] h-[10rem] flex items-center justify-center text-arch-white mx-auto mt-10">Pulse</button>
+            class="text-[3rem] py-4 font-bold w-full text-center border-[0.5rem] border-arch-black border-t-0 rounded-b-[2rem] overflow-hidden bg-arch-dark hover:bg-red-700">
+            Pulse
+        </button>
+        <div v-if="false"
+            class="text-[3rem] font-bold w-full text-center border-[0.5rem] border-arch-black border-t-0 rounded-b-[2rem] overflow-hidden bg-arch-dark">
+            <div
+                class="flex p-1 h-[5rem] text-[1.75rem] font-bold text-white w-[30rem] rounded-full mx-auto my-10 border-arch-black bg-arch-gray border-arch-black border-[0.25rem]">
+                <div class="w-1/2 cursor-pointer flex items-center justify-center rounded-full"
+                    :class="auto ? 'bg-arch-dark border-arch-black border-[0.25rem]' : ''" @click="auto = true">
+                    Auto
+                </div>
+
+                <div class="w-1/2 cursor-pointer flex items-center justify-center rounded-full"
+                    :class="!auto ? 'bg-arch-dark border-arch-black border-[0.25rem]' : ''" @click="auto = false">
+                    Manual
+                </div>
+            </div>
+
+            <button @click="pulse" v-if="auto == false"
+                class="rounded-full hover:bg-red-700 text-[2.5rem] my-6 bg-arch-gray border-[0.5rem] font-bold border-arch-black w-[10rem] h-[10rem] flex items-center justify-center text-arch-white mx-auto">Pulse</button>
+        </div>
 
         <div class="mt-10">
-            <div class="text-[3rem] font-bold text-center py-4">
+            <div
+                class="text-[3rem] font-bold py-4 bg-arch-dark w-full text-center border-[0.5rem] border-arch-black border-b-0 rounded-t-[2rem]">
                 INPUT
             </div>
 
             <div></div>
-            <input type="text" v-model="input"
-                class="w-full rounded-[2rem] bg-arch-gray border-[0.5rem] border-arch-black focus:outline-none font-bold leading-[4rem] text-[2.25rem] text-arch-white px-6 py-4 whitespace-nowrap">
+            <input type="text" v-model="input" placeholder="Number between 0-255"
+                class="w-full bg-arch-gray border-[0.5rem] border-arch-black focus:outline-none font-bold leading-[4rem] text-[2.25rem] text-arch-white px-6 py-4 whitespace-nowrap">
+
 
             <button @click="enter"
-                class="rounded-full text-[2.5rem] bg-arch-gray border-[0.5rem] font-bold border-arch-black w-[10rem] h-[10rem] flex items-center justify-center text-arch-white mx-auto mt-10">Enter</button>
+                class="text-[3rem] py-4 font-bold w-full text-center border-[0.5rem] border-arch-black border-t-0 rounded-b-[2rem] overflow-hidden bg-arch-dark hover:bg-red-700">
+                Enter
+            </button>
         </div>
 
         <div class="mt-10">
-            <div class="text-[3rem] font-bold text-center py-4">
+            <div
+                class="text-[3rem] font-bold py-4 bg-arch-dark w-full text-center border-[0.5rem] border-arch-black border-b-0 rounded-t-[2rem]">
                 OUTPUT
             </div>
 
             <div></div>
             <div
-                class="w-full rounded-[2rem] bg-arch-gray border-[0.5rem] border-arch-black focus:outline-none font-bold leading-[4rem] text-[2.25rem] text-arch-white px-6 py-4 whitespace-nowrap">
-                {{ parseInt(data.outr.value,2) }}
+                class="w-full rounded-b-[2rem] bg-arch-gray border-[0.5rem] border-arch-black focus:outline-none font-bold leading-[4rem] text-[2.25rem] text-arch-white px-6 py-4 whitespace-nowrap">
+                {{ parseInt(data.outr.value, 2) }}
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-const { data, addZero, clear } = useArch()
+const { data, addZero, clear, current } = useArch()
 
 const input = ref("")
+const auto = ref(false)
 
 const interrupt = ref(false)
 
@@ -50,8 +77,6 @@ const t = computed(() => parseInt(data.value.sc.value, 2))
 const d = computed(() => parseInt(data.value.ir.value.slice(1, 4), 2))
 
 const b = computed(() => parseInt(data.value.ir.value.slice(4, 16), 2))
-
-const current = ref({ logic: "", micros: [] })
 
 const enter = () => {
     if (data.value.fgi.value == "1") {

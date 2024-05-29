@@ -5,7 +5,18 @@
             <button @click="assemble"
                 class="block bg-arch-dark rounded-lg p-2 px-4 text-[2.25rem] font-bold text-white w-fit mx-auto mt-3 border-[0.4rem] border-arch-black">Assemble</button>
         </div>
-        <div class="bg-arch-gray border-[0.5rem] border-arch-black overflow-auto h-full relative">
+        <div class="flex justify-between mt-3">
+            <button @click="code = sample1; useArch().asm.value = code"
+                class="block bg-red-700 rounded-lg p-2 px-4 text-[2rem] font-bold text-white w-fit mx-auto border-[0.4rem] border-arch-black">Sample
+                1</button>
+            <button @click="code = sample2; useArch().asm.value = code"
+                class="block bg-red-700 rounded-lg p-2 px-4 text-[2rem] font-bold text-white w-fit mx-auto border-[0.4rem] border-arch-black">Sample
+                2</button>
+            <button @click="assemble" v-if="false"
+                class="block bg-red-700 rounded-lg p-2 px-4 text-[2rem] font-bold text-white w-fit mx-auto border-[0.4rem] border-arch-black">Sample
+                3</button>
+        </div>
+        <div class="bg-arch-gray border-[0.5rem] border-arch-black overflow-auto h-full relative mt-6">
             <ul class="font-bold flex flex-col items-end absolute top-4 left-0 bg-arch-gray w-[5rem]">
                 <li v-for="item, index in lineCount" class="leading-[4rem] text-[2.25rem] text-[#a9a9a9] text-right">{{
                     index + 1 }}.</li>
@@ -22,8 +33,8 @@
 </template>
 
 <script setup>
-const { addZero } = useArch()
-const code = ref(useArch().asm.value)
+const { addZero, current } = useArch()
+const code = ref(useArch().asm.value || sample1)
 const assemble = () => {
     code.value = code.value.toUpperCase()
     let labels = []
@@ -169,11 +180,12 @@ const assemble = () => {
             }
 
             else {
-                if (!isNaN(parseInt(line.inst[1], 16))) {
-                    num = parseInt(line.inst[1], 16).toString(2)
-                } else if (labels.find(x => x.label == line.inst[1])) {
+                if (labels.find(x => x.label == line.inst[1])) {
                     num = labels.find(x => x.label == line.inst[1]).num.toString(2)
-                } else {
+                } else if (!isNaN(parseInt(line.inst[1], 16))) {
+                    num = parseInt(line.inst[1], 16).toString(2)
+                }
+                else {
                     alert(`line ${line.line}: '${line.inst[1]}' is neither a HEX number nor a label`)
                     return
                 }
@@ -220,12 +232,59 @@ const assemble = () => {
     useArch().reset()
     for (let item of set) useArch().data.value.memory.value.push({ address: item.num, value: item.code })
     useArch().data.value.s.value = "1"
-    useArch().data.value.pc.value = addZero(start.toString(2), 12)
-    useArch().data.value.pc.default = false
-    useArch().data.value.pc.changed = true
+    useArch().data.value.s.default = false
+    useArch().data.value.s.changed = true
+    // useArch().data.value.pc.value = addZero(start.toString(2), 12)
+    // useArch().data.value.pc.default = false
+    // useArch().data.value.pc.changed = true
     useArch().editor.value = false
+
+    current.value = { logic: "", micros: [] }
+    current.value.logic = "Start"
+    current.value.micros.push("S &#10229; 1")
 }
 
 const lineCount = computed(() => code.value.split("\n"))
 const maxLine = computed(() => Math.max(...code.value.split("\n").map(x => x.length)))
+
+const sample1 = `org 0
+lda A
+add B
+sta C
+out
+hlt
+org 100
+A, dec 83
+B, dec -23
+C, dec 0
+end`
+
+const sample2 = `lda x
+bsa or
+hex 3af6
+sta y
+hlt
+x, hex 7b95
+y, hex 0
+or, hex 0
+cma
+sta tmp
+lda or I
+cma
+and tmp
+cma
+isz or
+bun or I
+tmp, hex 0
+end`
+
+const sample3 = `lda num1
+add num2
+sta num3
+out
+hlt
+org 100
+num1, dec 2
+num2, dec 3
+num3, dec 0`
 </script>
