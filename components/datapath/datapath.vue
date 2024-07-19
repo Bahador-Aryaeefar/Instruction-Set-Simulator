@@ -30,7 +30,7 @@
                 <DatapathOutr></DatapathOutr>
 
                 <div
-                    class="h-16 bg-arch-white w-full mt-[7rem] text-arch-black flex items-center justify-center text-[2rem] font-bold">
+                    class="h-16 bg-arch-white w-full mt-[7rem] text-arch-black flex items-center justify-center text-4xl font-bold">
                     16 Bit Common Bus
                 </div>
             </div>

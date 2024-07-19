@@ -9,31 +9,58 @@
         </svg>
 
         <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative">
-            <div class="text-arch-black font-bold text-2xl text-center">DR</div>
+            <div class="text-arch-black font-bold text-4xl text-center py-2">
+                DR
+            </div>
+            <div class="text-center flex gap-4">
+                <div class="w-1/2 flex border-arch-gray rounded-lg border-[0.25rem] overflow-hidden">
+                    <div
+                        class="py-1 px-2 flex items-center justify-center text-white text-3xl font-medium bg-yellow-700 border-arch-gray border-r-[0.25rem]">
+                        HEX
+                    </div>
+
+                    <div class="py-1 px-2 flex items-center justify-center text-white text-3xl font-medium grow"
+                        :class="bitColor(data.dr)">
+                        {{ parseInt(data.dr.value, 2).toString(16).toUpperCase() }}
+                    </div>
+                </div>
+
+                <div class="w-1/2 flex border-arch-gray rounded-lg border-[0.25rem] overflow-hidden">
+                    <div
+                        class="py-1 px-2 flex items-center justify-center text-white text-3xl font-medium bg-yellow-700 border-arch-gray border-r-[0.25rem]">
+                        DEC
+                    </div>
+
+                    <div class="py-1 px-2 flex items-center justify-center text-white text-3xl font-medium grow"
+                        :class="bitColor(data.dr)">
+                        {{ parseInt(data.dr.value, 2) }}
+                    </div>
+                </div>
+            </div>
             <ul class="flex mt-2 bg-arch-gray rounded-lg p-1">
                 <li v-for="item in data.dr.value" :class="bitColor(data.dr)"
-                    class="w-10 h-10 flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
+                    class="w-12 h-12 flex items-center justify-center text-white text-3xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
                     {{ item }}</li>
             </ul>
 
-            <div class="absolute top-[7rem] left-[2rem] flex-col flex items-center gap-1 text-2xl font-bold"
+            <div class="absolute -bottom-[4.25rem] left-[2rem] flex-col flex items-center gap-1 text-3xl font-bold"
                 :class="textColor(data.dr.ld)">
                 <div class="w-2 h-7 rounded-b-full" :class="sigColor(data.dr.ld)"></div>
                 LD
             </div>
-            <div class="absolute top-[7rem] left-[7rem] flex-col flex items-center gap-1 text-2xl font-bold"
+            <div class="absolute -bottom-[4.25rem] left-[8rem] flex-col flex items-center gap-1 text-3xl font-bold"
                 :class="textColor(data.dr.inr)">
                 <div class="w-2 h-7 rounded-b-full" :class="sigColor(data.dr.inr)"></div>
                 INR
             </div>
-            <div class="absolute top-[7rem] left-[12rem] flex-col flex items-center gap-1 text-2xl font-bold"
+            <div class="absolute -bottom-[4.25rem] left-[15rem] flex-col flex items-center gap-1 text-3xl font-bold"
                 :class="textColor(data.dr.clr)">
                 <div class="w-2 h-7 rounded-b-full" :class="sigColor(data.dr.clr)"></div>
                 CLR
             </div>
 
 
-            <div class="absolute top-[7rem] right-[2rem] flex-col flex items-center gap-1 text-2xl font-bold">
+            <div class="absolute -bottom-[4.25rem] right-[2rem] flex-col flex items-center gap-1 text-3xl font-bold">
                 <div class="w-2 h-7 bg-arch-white rounded-b-full"></div>
                 CLK
             </div>
@@ -49,10 +76,12 @@
                 stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
 
-        <div class="absolute right-[20rem] top-[10.25rem] flex flex-col">
-            <div class="h-[9.75rem] w-2 self-end" :class="sigColor([1, 2, 4].includes(data.alu))"></div>
-            <div class="w-[82.5rem] h-2" :class="sigColor([1, 2, 4].includes(data.alu))"></div>
+        <!-- Connector -->
+        <div class="absolute right-[20rem] top-[12.9rem] flex flex-col">
+            <div class="h-[13rem] w-2 self-end" :class="sigColor([1, 2, 4].includes(data.alu))"></div>
+            <div class="w-[94.8rem] h-2" :class="sigColor([1, 2, 4].includes(data.alu))"></div>
         </div>
+
         <div class="absolute top-[8rem] -right-11 text-[3rem] font-bold h-fit"
             :class="busColor(parseInt(data.bus.value, 2) == 3 && data.bus.changed)">3
         </div>

@@ -7,13 +7,13 @@
 
         <div class="absolute right-[16.25rem] top-0 bottom-0 my-auto flex items-center text-[2.5rem] font-bold">
             <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative">
-                <div class="text-arch-black font-bold text-2xl text-center">Select</div>
+                <div class="text-arch-black font-bold text-4xl text-center py-2">Select</div>
                 <ul class="flex mt-2 bg-arch-gray rounded-lg p-1">
                     <li v-for="item, index in data.bus.value" class="">
-                        <div class="text-2xl text-center">S{{ 2 - index }}</div>
+                        <div class="text-3xl text-center">S{{ 2 - index }}</div>
                         <div class="h-1 w-8 mx-auto bg-arch-white mb-2 rounded-full"></div>
                         <div :class="bitColor(data.bus)"
-                            class="w-10 h-10 flex items-center justify-center text-white text-2xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
+                            class="w-12 h-12 flex items-center justify-center text-white text-3xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
                             {{ item }}
                         </div>
                     </li>
