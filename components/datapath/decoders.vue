@@ -34,8 +34,6 @@
                     :stroke="getColor(data.sc.changed)" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
                     stroke-linejoin="round" />
             </svg>
-            <div class="absolute top-[8rem] -right-11 text-arch-black text-[3rem] font-bold h-fit">2
-            </div>
 
             <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative">
                 <div class="text-arch-black font-bold text-4xl text-center py-2">3x8 Decoder</div>
