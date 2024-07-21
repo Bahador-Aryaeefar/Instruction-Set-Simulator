@@ -68,7 +68,7 @@
                         @click="index = 15">F00</li>
                 </ul>
 
-                <div class="flex bg-arch-gray text-3xl font-bold mt-4 rounded-t-lg border-b-[0.25rem] border-arch-white w-[calc(100%-2rem)]">
+                <div class="flex bg-arch-gray text-3xl font-bold mt-4 rounded-t-lg border-b-[0.25rem] border-arch-white">
                     <div class="w-[9.5rem] text-center shrink-0 border-r-[0.25rem] border-arch-white h-full py-4">Address</div>
                     <div class="w-[49.25rem] text-center shrink-0 border-r-[0.25rem] border-arch-white h-full py-4">BIN</div>
                     <div class="w-[9.25rem] text-center shrink-0 border-r-[0.25rem] border-arch-white h-full py-4">HEX</div>
