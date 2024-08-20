@@ -85,10 +85,7 @@ num2, dec 3
 num3, dec 0`
 ])
 
-const examplesInput = ref({
-    text: 'Example 1',
-    value: 1
-})
+const { examplesInput } = useArch()
 
 const { addZero, current } = useArch()
 const code = ref(useArch().asm.value || examples.value[0])
@@ -296,6 +293,7 @@ const paste = async () => {
     try {
         code.value = await navigator.clipboard.readText();
         code.value = code.value.replace(/["]/gm, '').replace(/[\r\n]+/gm, '\n')
+        useArch().asm.value = code
         examplesInput.value = null
     } catch {
         alert("Could not use the clipboard")
