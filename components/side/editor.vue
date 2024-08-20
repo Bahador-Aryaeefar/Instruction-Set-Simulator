@@ -1,7 +1,6 @@
 <template>
     <div class="border-r-[0.5rem] border-arch-black bg-arch-white p-4 h-full flex flex-col">
         <div class="py-4 bg-arch-white text-[3rem] font-bold">
-            <div class="w-fit mx-auto">Code Editor</div>
             <button @click="assemble"
                 class="block bg-arch-dark rounded-lg p-2 px-4 text-[2.25rem] font-bold text-white w-fit mx-auto mt-3 border-[0.4rem] border-arch-black">Assemble</button>
         </div>
@@ -45,7 +44,17 @@
 
 <script setup>
 
-const examples = ref([`org 0
+const examples = ref([
+    `lda num1
+add num2
+sta num3
+out
+hlt
+org 100
+num1, dec 2
+num2, dec 3
+num3, dec 0`,
+    `org 0
 lda A
 add B
 sta C
@@ -73,16 +82,7 @@ cma
 isz or
 bun or I
 tmp, hex 0
-end`,
-    `lda num1
-add num2
-sta num3
-out
-hlt
-org 100
-num1, dec 2
-num2, dec 3
-num3, dec 0`
+end`
 ])
 
 const { examplesInput } = useArch()

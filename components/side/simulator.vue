@@ -1,50 +1,83 @@
 <template>
     <div class="border-r-[0.5rem] border-arch-black bg-arch-white p-4 h-full flex flex-col overflow-auto">
-        <button @click="useArch().setup()"
-            class="shrink-0 text-[3rem] py-4 font-bold w-full text-center border-[0.5rem] border-arch-black rounded-[2rem] overflow-hidden bg-arch-dark hover:bg-red-700">
-            Reset
-        </button>
 
-        <div>
-            <div class="mt-10 text-[3rem] font-bold py-4 bg-arch-dark w-full text-center border-[0.5rem] border-arch-black border-b-0 rounded-t-[2rem]"
-                v-html="current.logic || '-'">
+        <div class="border-arch-black border-[0.5rem] rounded-lg">
+            <div class="text-[3rem] text-white font-bold py-4 bg-yellow-700 w-full text-center">
+                Controls
             </div>
+            <div class="flex border-t-[0.5rem] border-arch-black text-[3rem] text-white font-bold text-center">
+                <div class="bg-yellow-700 py-4 px-6 w-1/4">CLK</div>
+                <input type="text"
+                    class="bg-arch-gray py-4 px-6 border-x-[0.5rem] w-0 grow border-arch-black focus:outline-none text-center"
+                    v-model="clock" />
+                <div class="bg-yellow-700 py-4 px-6 w-1/4">Hz</div>
 
-            <div
-                class="min-h-[30rem] bg-arch-gray border-[0.5rem] border-arch-black overflow-auto relative font-bold leading-[4rem] text-[2.25rem] text-arch-white whitespace-nowrap">
-                <div v-for="item in current.micros" v-html="item"
-                    class="text-center text-[2.5rem] bg-blue-300 text-red-700 border-b-[0.5rem] border-arch-black py-4">
-                </div>
             </div>
-
-            <button @click="pulse"
-                class="text-[3rem] py-4 font-bold w-full text-center border-[0.5rem] border-arch-black border-t-0 rounded-b-[2rem] overflow-hidden bg-arch-dark hover:bg-red-700">
-                Pulse
-            </button>
+            <div class="flex border-t-[0.5rem] border-arch-black">
+                <button @click="useArch().setup()" title="reset"
+                    class="shrink-0 text-[3rem] py-5 font-bold w-1/3 text-center overflow-hidden bg-arch-dark hover:bg-red-700">
+                    <img class="h-16 mx-auto" src="/icons/reset.svg" alt="">
+                </button>
+                <button @click="autoAction" title="auto clock"
+                    class="shrink-0 text-[3rem] py-5 font-bold w-1/3 text-center border-x-[0.5rem] border-arch-black overflow-hidden  hover:bg-red-700"
+                    :class="auto ? 'bg-red-700' : 'bg-arch-dark'">
+                    <img v-if="auto" class="h-16 mx-auto" src="/icons/stop.svg" alt="">
+                    <img v-else class="h-16 mx-auto" src="/icons/auto.svg" alt="">
+                </button>
+                <button @click="pulse" title="pulse"
+                    class="shrink-0 text-[3rem] py-5 font-bold w-1/3 text-center overflow-hidden bg-arch-dark hover:bg-red-700">
+                    <img class="h-16 mx-auto" src="/icons/pulse.svg" alt="">
+                </button>
+            </div>
         </div>
 
-        <div v-if="false"
-            class="text-[3rem] font-bold w-full text-center border-[0.5rem] border-arch-black border-t-0 rounded-b-[2rem] overflow-hidden bg-arch-dark">
+        <div class="mt-6" v-if="set[0]">
             <div
-                class="flex p-1 h-[5rem] text-[1.75rem] font-bold text-white w-[30rem] rounded-full mx-auto my-10 border-arch-black bg-arch-gray border-arch-black border-[0.25rem]">
-                <div class="w-1/2 cursor-pointer flex items-center justify-center rounded-full"
-                    :class="auto ? 'bg-arch-dark border-arch-black border-[0.25rem]' : ''" @click="auto = true">
-                    Auto
-                </div>
+                class="text-[3rem] text-white font-bold py-4 bg-yellow-700 w-full text-center border-[0.5rem] border-arch-black border-b-0 rounded-t-lg">
+                Instructions
+            </div>
 
-                <div class="w-1/2 cursor-pointer flex items-center justify-center rounded-full"
-                    :class="!auto ? 'bg-arch-dark border-arch-black border-[0.25rem]' : ''" @click="auto = false">
-                    Manual
+            <div
+                class="max-h-[40rem] overflow-y-scroll bg-arch-gray border-[0.5rem] border-arch-black relative font-bold leading-[4rem] text-[2.25rem] text-arch-white whitespace-nowrap rounded-b-lg">
+                <div v-for="(item, index) in set" class="flex text-[2.5rem]  border-arch-black"
+                    :class="index ? 'border-t-[0.5rem]' : ''">
+                    <div title="set break point" @click="addBreak(item.num)"
+                        class="w-[6.5rem] flex items-center justify-center cursor-pointer hover:bg-red-700 text-white shrink-0"
+                        :class="breadAddr[item.num] ? 'bg-red-700' : ' bg-arch-dark'">
+                        {{ addZero(item.num.toString(16), 3).toUpperCase() }}
+                    </div>
+                    <div :ref="(el) => refs[item.num] = el"
+                        class="text-white grow py-4 px-6 border-x-[0.5rem] border-arch-black"
+                        :class="(instruction && parseInt(instruction, 2) == item.num) ? 'bg-red-700' : 'bg-arch-gray'">
+                        {{ item.inst.join(" ") }}
+                    </div>
                 </div>
             </div>
 
-            <button @click="pulse" v-if="auto == false"
-                class="rounded-full hover:bg-red-700 text-[2.5rem] my-6 bg-arch-gray border-[0.5rem] font-bold border-arch-black w-[10rem] h-[10rem] flex items-center justify-center text-arch-white mx-auto">Pulse</button>
+            <div
+                class="mt-6 text-[3rem] text-white font-bold py-4 bg-yellow-700 w-full text-center border-[0.5rem] border-arch-black border-b-0 rounded-t-lg">
+                Micro Instructions
+            </div>
+
+            <div
+                class="bg-arch-gray border-[0.5rem] border-arch-black overflow-auto relative font-bold leading-[4rem] text-[2.25rem] text-arch-white whitespace-nowrap">
+                <div v-for="(item, index) in (current.micros[0] ? current.micros : ['-'])" v-html="item" :class="index ? 'border-t-[0.5rem]' : ''"
+                    class="text-center text-[2.5rem] bg-blue-300 text-red-700 border-arch-black py-4">
+                </div>
+            </div>
+
+            <div class="flex border-arch-black border-t-0 border-[0.5rem] text-[2.5rem] font-bold rounded-b-lg">
+                <div
+                    class="text-white font-bold py-4 text-center flex items-center justify-center border-r-[0.5rem] border-arch-black px-4 pb-5 bg-yellow-700">
+                    Logic
+                </div>
+                <div class="bg-arch-gray grow flex items-center px-4 text-white" v-html="current.logic || '-'"></div>
+            </div>
         </div>
 
-        <div class="mt-10">
+        <div class="mt-6">
             <div
-                class="text-[3rem] font-bold py-4 bg-arch-dark w-full text-center border-[0.5rem] border-arch-black border-b-0 rounded-t-[2rem]">
+                class="text-[3rem] font-bold py-4 bg-yellow-700 w-full text-center border-[0.5rem] border-arch-black border-b-0 rounded-t-lg">
                 INPUT
             </div>
 
@@ -54,31 +87,21 @@
 
 
             <button @click="enter"
-                class="text-[3rem] py-4 font-bold w-full text-center border-[0.5rem] border-arch-black border-t-0 rounded-b-[2rem] overflow-hidden bg-arch-dark hover:bg-red-700">
+                class="text-[3rem] py-4 font-bold w-full text-center border-[0.5rem] border-arch-black border-t-0 rounded-b-lg overflow-hidden bg-arch-dark hover:bg-red-700">
                 Enter
             </button>
-        </div>
-
-        <div class="mt-10">
-            <div
-                class="text-[3rem] font-bold py-4 bg-arch-dark w-full text-center border-[0.5rem] border-arch-black border-b-0 rounded-t-[2rem]">
-                OUTPUT
-            </div>
-
-            <div></div>
-            <div
-                class="w-full rounded-b-[2rem] bg-arch-gray border-[0.5rem] border-arch-black focus:outline-none font-bold leading-[4rem] text-[2.25rem] text-arch-white px-6 py-4 whitespace-nowrap">
-                {{ parseInt(data.outr.value, 2) }}
-            </div>
         </div>
     </div>
 </template>
 
 <script setup>
-const { data, addZero, clear, current } = useArch()
+const { data, addZero, clear, current, set, instruction, auto, breadAddr } = useArch()
+
+const refs = ref([])
+
+const clock = ref("1")
 
 const input = ref("")
-const auto = ref(false)
 
 const interrupt = ref(false)
 
@@ -108,7 +131,6 @@ const enter = () => {
 
 const pulse = () => {
     clear()
-
     current.value = { logic: "", micros: [] }
 
     if (data.value.s.value == "0") return
@@ -183,6 +205,9 @@ const pulse = () => {
         current.value.logic += "R'"
         switch (t.value) {
             case 0:
+                instruction.value = data.value.pc.value
+                refs.value[parseInt(instruction.value, 2)].scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth", })
+
                 current.value.logic += "T<sub>0</sub>"
                 current.value.micros.push("AR &#10229; PC")
 
@@ -793,4 +818,31 @@ const pulse = () => {
     data.value.sc.changed = true
     data.value.sc.inr = true
 }
+
+let interval = null;
+
+const autoAction = () => {
+    if (interval) clearInterval(interval)
+    if (auto.value) {
+        auto.value = false
+        clearInterval(interval)
+    } else {
+        auto.value = true
+        interval = setInterval(() => {
+            if (instruction.value && breadAddr.value[parseInt(instruction.value, 2)]) {
+                auto.value = false
+                clearInterval(interval);
+            } else pulse()
+        }, 1000 / parseInt(clock.value))
+    }
+}
+
+const addBreak = (addr) => {
+    if (breadAddr.value[addr]) breadAddr.value[addr] = false
+    else breadAddr.value[addr] = true
+}
+
+onUnmounted(() => {
+    if (interval) clearInterval(interval)
+})
 </script>
