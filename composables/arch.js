@@ -67,7 +67,6 @@ export const useArch = () => {
         current.value.logic = "Start"
         current.value.micros.push("S &#10229; 1")
         instruction.value = null
-        auto.value = false
         breadAddr.value = []
     }
 
