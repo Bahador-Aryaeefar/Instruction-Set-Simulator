@@ -49,6 +49,18 @@ export const useArch = () => {
         }
     }
 
+    const setup = () => {
+        reset()
+        for (let item of set.value) data.value.memory.value.push({ address: item.num, value: item.code })
+        data.value.s.value = "1"
+        data.value.s.default = false
+        data.value.s.changed = true
+        editor.value = false
+        current.value = { logic: "", micros: [] }
+        current.value.logic = "Start"
+        current.value.micros.push("S &#10229; 1")
+    }
+
     const clear = () => {
         data.value = {
             s: { ...data.value.s, changed: false },
@@ -104,5 +116,5 @@ export const useArch = () => {
         return num
     }
 
-    return { set, editor, asm, current, data, reset, bitColor, addZero, sigColor, textColor, getColor, busColor, clear }
+    return { set, editor, asm, current, data, reset, bitColor, addZero, sigColor, textColor, getColor, busColor, clear, setup }
 }

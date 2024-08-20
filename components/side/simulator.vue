@@ -1,18 +1,28 @@
 <template>
-    <div class="border-r-[0.5rem] border-arch-black bg-arch-white p-4 h-full flex flex-col">
-        <div class="text-[3rem] font-bold py-4 bg-arch-dark w-full text-center border-[0.5rem] border-arch-black border-b-0 rounded-t-[2rem]"
-            v-html="current.logic || '-'">
-        </div>
-        <div
-            class="min-h-[30rem] bg-arch-gray border-[0.5rem] border-arch-black overflow-auto relative font-bold leading-[4rem] text-[2.25rem] text-arch-white whitespace-nowrap">
-            <div v-for="item in current.micros" v-html="item"
-                class="text-center text-[2.5rem] bg-blue-300 text-red-700 border-b-[0.5rem] border-arch-black py-4">
-            </div>
-        </div>
-        <button @click="pulse"
-            class="text-[3rem] py-4 font-bold w-full text-center border-[0.5rem] border-arch-black border-t-0 rounded-b-[2rem] overflow-hidden bg-arch-dark hover:bg-red-700">
-            Pulse
+    <div class="border-r-[0.5rem] border-arch-black bg-arch-white p-4 h-full flex flex-col overflow-auto">
+        <button @click="useArch().setup()"
+            class="shrink-0 text-[3rem] py-4 font-bold w-full text-center border-[0.5rem] border-arch-black rounded-[2rem] overflow-hidden bg-arch-dark hover:bg-red-700">
+            Reset
         </button>
+
+        <div>
+            <div class="mt-10 text-[3rem] font-bold py-4 bg-arch-dark w-full text-center border-[0.5rem] border-arch-black border-b-0 rounded-t-[2rem]"
+                v-html="current.logic || '-'">
+            </div>
+
+            <div
+                class="min-h-[30rem] bg-arch-gray border-[0.5rem] border-arch-black overflow-auto relative font-bold leading-[4rem] text-[2.25rem] text-arch-white whitespace-nowrap">
+                <div v-for="item in current.micros" v-html="item"
+                    class="text-center text-[2.5rem] bg-blue-300 text-red-700 border-b-[0.5rem] border-arch-black py-4">
+                </div>
+            </div>
+
+            <button @click="pulse"
+                class="text-[3rem] py-4 font-bold w-full text-center border-[0.5rem] border-arch-black border-t-0 rounded-b-[2rem] overflow-hidden bg-arch-dark hover:bg-red-700">
+                Pulse
+            </button>
+        </div>
+
         <div v-if="false"
             class="text-[3rem] font-bold w-full text-center border-[0.5rem] border-arch-black border-t-0 rounded-b-[2rem] overflow-hidden bg-arch-dark">
             <div

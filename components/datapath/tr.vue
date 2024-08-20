@@ -70,7 +70,7 @@
                 :stroke="getColor(parseInt(data.bus.value,2) == 6 && data.bus.changed)" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
                 stroke-linejoin="round" />
         </svg>
-        <div class="absolute top-[8rem] -right-11 text-[3rem] font-bold h-fit" :class="busColor(parseInt(data.bus.value,2) == 6 && data.bus.changed)">6
+        <div class="absolute top-[10.5rem] -right-11 text-[3rem] font-bold h-fit" :class="busColor(parseInt(data.bus.value,2) == 6 && data.bus.changed)">6
         </div>
     </div>
 </template>

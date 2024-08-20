@@ -5,16 +5,27 @@
             <button @click="assemble"
                 class="block bg-arch-dark rounded-lg p-2 px-4 text-[2.25rem] font-bold text-white w-fit mx-auto mt-3 border-[0.4rem] border-arch-black">Assemble</button>
         </div>
-        <div class="flex justify-between mt-3">
-            <button @click="code = sample1; useArch().asm.value = code"
-                class="block bg-red-700 rounded-lg p-2 px-4 text-[2rem] font-bold text-white w-fit mx-auto border-[0.4rem] border-arch-black">Sample
-                1</button>
-            <button @click="code = sample2; useArch().asm.value = code"
-                class="block bg-red-700 rounded-lg p-2 px-4 text-[2rem] font-bold text-white w-fit mx-auto border-[0.4rem] border-arch-black">Sample
-                2</button>
-            <button @click="assemble" v-if="false"
-                class="block bg-red-700 rounded-lg p-2 px-4 text-[2rem] font-bold text-white w-fit mx-auto border-[0.4rem] border-arch-black">Sample
-                3</button>
+        <div class="flex justify-between mt-3 gap-4">
+            <div @click="paste" title="Paste"
+                class="bg-red-700 rounded-lg w-20 border-[0.4rem] border-arch-black flex items-center justify-center shrink-0 cursor-pointer">
+                <img class="w-14" src="/icons/paste.svg" alt="paste">
+            </div>
+            <UiSelectInput class="w-full" :items="[
+                {
+                    text: 'Example 1',
+                    value: 0
+                },
+                {
+                    text: 'Example 2',
+                    value: 1
+                },
+                {
+                    text: 'Example 3',
+                    value: 2
+                }
+            ]" placeHolder="Custom" :value="examplesInput"
+                @pick="(item) => { code = examples[item.value]; useArch().asm.value = code; examplesInput = item }">
+            </UiSelectInput>
         </div>
         <div class="bg-arch-gray border-[0.5rem] border-arch-black overflow-auto h-full relative mt-6">
             <ul class="font-bold flex flex-col items-end absolute top-4 left-0 bg-arch-gray w-[5rem]">
@@ -23,7 +34,7 @@
             </ul>
             <div class="gap-6 px-6 pl-[8rem] pt-4 h-full">
                 <textarea v-model="code" style="resize: none;"
-                    @input="(event) => { code = event.target.value; useArch().asm.value = code }"
+                    @input="(event) => { code = event.target.value; useArch().asm.value = code; examplesInput = null }"
                     :style="`height: ${lineCount.length * 4 + 3}rem; width: ${(maxLine + 1) * 2}rem;`"
                     class="uppercase min-h-[calc(100%-1rem)] leading-[4rem] min-w-full focus:outline-none bg-transparent text-arch-white text-[2.5rem] font-bold placeholder:text-[#a9a9a9]"
                     placeholder=""></textarea>
@@ -33,8 +44,54 @@
 </template>
 
 <script setup>
+
+const examples = ref([`org 0
+lda A
+add B
+sta C
+out
+hlt
+org 100
+A, dec 83
+B, dec -23
+C, dec 0
+end`,
+    `lda x
+bsa or
+hex 3af6
+sta y
+hlt
+x, hex 7b95
+y, hex 0
+or, hex 0
+cma
+sta tmp
+lda or I
+cma
+and tmp
+cma
+isz or
+bun or I
+tmp, hex 0
+end`,
+    `lda num1
+add num2
+sta num3
+out
+hlt
+org 100
+num1, dec 2
+num2, dec 3
+num3, dec 0`
+])
+
+const examplesInput = ref({
+    text: 'Example 1',
+    value: 1
+})
+
 const { addZero, current } = useArch()
-const code = ref(useArch().asm.value || sample1)
+const code = ref(useArch().asm.value || examples.value[0])
 const assemble = () => {
     code.value = code.value.toUpperCase()
     let labels = []
@@ -89,8 +146,7 @@ const assemble = () => {
             num++
         }
     }
-    console.log(set);
-    console.log(labels);
+
     for (let [index, line] of set.entries()) {
         if (line.inst.length == 1) {
             switch (line.inst[0]) {
@@ -228,63 +284,23 @@ const assemble = () => {
         }
         set[index] = line
     }
-    console.log(set);
-    useArch().reset()
-    for (let item of set) useArch().data.value.memory.value.push({ address: item.num, value: item.code })
-    useArch().data.value.s.value = "1"
-    useArch().data.value.s.default = false
-    useArch().data.value.s.changed = true
-    // useArch().data.value.pc.value = addZero(start.toString(2), 12)
-    // useArch().data.value.pc.default = false
-    // useArch().data.value.pc.changed = true
-    useArch().editor.value = false
 
-    current.value = { logic: "", micros: [] }
-    current.value.logic = "Start"
-    current.value.micros.push("S &#10229; 1")
+    useArch().set.value = set
+    useArch().setup()
 }
 
 const lineCount = computed(() => code.value.split("\n"))
 const maxLine = computed(() => Math.max(...code.value.split("\n").map(x => x.length)))
 
-const sample1 = `org 0
-lda A
-add B
-sta C
-out
-hlt
-org 100
-A, dec 83
-B, dec -23
-C, dec 0
-end`
+const paste = async () => {
+    try {
+        code.value = await navigator.clipboard.readText();
+        code.value = code.value.replace(/["]/gm, '').replace(/[\r\n]+/gm, '\n')
+        examplesInput.value = null
+    } catch {
+        alert("Could not use the clipboard")
+    }
 
-const sample2 = `lda x
-bsa or
-hex 3af6
-sta y
-hlt
-x, hex 7b95
-y, hex 0
-or, hex 0
-cma
-sta tmp
-lda or I
-cma
-and tmp
-cma
-isz or
-bun or I
-tmp, hex 0
-end`
+}
 
-const sample3 = `lda num1
-add num2
-sta num3
-out
-hlt
-org 100
-num1, dec 2
-num2, dec 3
-num3, dec 0`
 </script>

@@ -186,7 +186,7 @@
             <div class="w-[94.75rem] h-2" :class="sigColor([1, 2, 3, 6, 7].includes(data.alu))"></div>
         </div>
 
-        <div class="absolute top-[13.5rem] -right-11 text-arch-black text-[3rem] font-bold h-fit"
+        <div class="absolute top-[18rem] -right-11 text-arch-black text-[3rem] font-bold h-fit"
             :class="busColor(parseInt(data.bus.value, 2) == 4 && data.bus.changed)">4
         </div>
     </div>

@@ -80,7 +80,7 @@
 
         <div class="absolute right-[10rem] top-0 w-2 h-[calc(50%+3.5rem)]"
             :class="sigColor(data.memory.write || data.memory.read)"></div>
-        <div class="absolute top-[8rem] -right-11 text-[3rem] font-bold h-fit"
+        <div class="absolute top-[10.5rem] -right-11 text-[3rem] font-bold h-fit"
             :class="busColor(parseInt(data.bus.value, 2) == 1 && data.bus.changed)">1
         </div>
     </div>
