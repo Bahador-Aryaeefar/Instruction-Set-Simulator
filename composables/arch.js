@@ -61,7 +61,7 @@ export const useArch = () => {
         }
     }
 
-    const setup = () => {
+    const setup = (clearBreak) => {
         reset()
         for (let item of set.value) data.value.memory.value.push({ address: item.num, value: item.code })
         data.value.s.value = "1"
@@ -76,7 +76,7 @@ export const useArch = () => {
         current.value.micros.push("S &#10229; 1")
         current.value.micros.push(`PC &#10229; ${begin.value}`)
         instruction.value = null
-        breadAddr.value = []
+        if (clearBreak) breadAddr.value = []
     }
 
     const clear = () => {

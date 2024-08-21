@@ -302,7 +302,7 @@ const assemble = () => {
     }
 
     useArch().set.value = set
-    useArch().setup()
+    useArch().setup(true)
 }
 
 const lineCount = computed(() => code.value.split("\n"))
