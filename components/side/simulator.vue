@@ -79,7 +79,7 @@
 
         <div class="mt-6">
             <div
-                class="text-[3rem] font-bold py-4 bg-yellow-700 w-full text-center border-[0.5rem] border-arch-black border-b-0 rounded-t-lg">
+                class="text-[3rem] text-white font-bold py-4 bg-yellow-700 w-full text-center border-[0.5rem] border-arch-black border-b-0 rounded-t-lg">
                 INPUT
             </div>
 
