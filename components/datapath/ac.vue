@@ -2,7 +2,7 @@
     <div class="flex items-center pt-[11rem] relative z-[1]">
         <div class="w-[20rem] grow"></div>
 
-        <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative">
+        <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative z-[1]">
             <div class="text-arch-black font-bold text-4xl text-center py-2">ALU</div>
             <ul class="mt-2 bg-arch-gray rounded-lg p-2 space-y-1">
                 <li class="flex gap-1">
@@ -164,8 +164,8 @@
             </div>
 
 
-            <div class="absolute -bottom-[4.25rem] right-[2rem] flex-col flex items-center gap-1 text-3xl font-bold">
-                <div class="w-2 h-7 bg-arch-white rounded-b-full"></div>
+            <div class="absolute -bottom-[4.25rem] right-[2rem] flex-col flex items-center gap-1 text-3xl font-bold" :class="textColor(data.clk)">
+                <div class="w-2 h-7 rounded-b-full" :class="sigColor(data.clk)"></div>
                 CLK
             </div>
         </div>

@@ -20,9 +20,9 @@
                 </div>
 
 
-                <div class="absolute -top-[4.25rem] -right-2 flex-col flex items-center gap-1 text-3xl font-bold">
+                <div class="absolute -top-[4.25rem] -right-2 flex-col flex items-center gap-1 text-3xl font-bold" :class="textColor(data.clk)">
                     CLK
-                    <div class="w-2 h-7 bg-arch-white rounded-t-full"></div>
+                    <div class="w-2 h-7 rounded-t-full" :class="sigColor(data.clk)"></div>
                 </div>
             </div>
 
@@ -58,22 +58,22 @@
                 </ul>
             </div>
 
-            <div class="h-2 w-[10rem]" :class="sigColor(data.ir.changed)"></div>
+            <div class="h-2 w-[10rem]" :class="sigColor(data.decode.changed)"></div>
 
             <svg class="w-14 -ml-9 -mr-3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                     d="M8.95011 19.9201L15.4701 13.4001C16.2401 12.6301 16.2401 11.3701 15.4701 10.6001L8.95011 4.08008"
-                    :stroke="getColor(data.ir.changed)" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
+                    :stroke="getColor(data.decode.changed)" stroke-width="3" stroke-miterlimit="10" stroke-linecap="round"
                     stroke-linejoin="round" />
             </svg>
 
             <div class="w-fit px-4 pb-4 pt-2 bg-arch-white rounded-lg relative">
                 <div class="text-arch-black font-bold text-4xl text-center py-2">3x8 Decoder</div>
                 <ul class="flex mt-2 bg-arch-gray rounded-lg p-1">
-                    <li v-for="item, index in d" class="">
+                    <li v-for="item, index in data.decode.value" class="">
                         <div class="text-3xl text-center">D{{ 7 - index }}</div>
                         <div class="h-1 w-8 mx-auto bg-arch-white mb-2 rounded-full"></div>
-                        <div :class="bitColor(data.ir)"
+                        <div :class="bitColor(data.decode)"
                             class="w-12 h-12 flex items-center justify-center text-white text-3xl font-medium rounded-lg border-[0.125rem] border-arch-gray">
                             {{ item }}
                         </div>

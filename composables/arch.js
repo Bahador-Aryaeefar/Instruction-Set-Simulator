@@ -2,6 +2,7 @@ export const useArch = () => {
     const editor = useState("editor", () => true)
     const asm = useState("asm", () => "")
     const set = useState("set", () => [])
+    const begin = useState("begin", () => "0")
     const examplesInput = useState("example", () => ({
         text: 'Example 1',
         value: 1
@@ -29,7 +30,9 @@ export const useArch = () => {
         tr: { value: "0000000000000000", changed: false, default: true, ld: false, inr: false, clr: false },
         outr: { value: "00000000", changed: false, default: true, ld: false },
         sc: { value: "000", changed: false, default: true, inr: false, clr: false },
-        bus: { value: "000", changed: false, default: true }
+        bus: { value: "000", changed: false, default: true },
+        decode: { value: "00000000", changed: false, default: true },
+        clk: false
     }))
 
     const reset = () => {
@@ -52,7 +55,9 @@ export const useArch = () => {
             tr: { value: "0000000000000000", changed: false, default: true, ld: false, inr: false, clr: false },
             outr: { value: "00000000", changed: false, default: true, ld: false },
             sc: { value: "000", changed: false, default: true, ld: false, inr: false, clr: false },
-            bus: { value: "000", changed: false, default: true }
+            bus: { value: "000", changed: false, default: true },
+            decode: { value: "00000000", changed: false, default: true },
+            clk: false
         }
     }
 
@@ -62,10 +67,14 @@ export const useArch = () => {
         data.value.s.value = "1"
         data.value.s.default = false
         data.value.s.changed = true
+        data.value.pc.value = addZero(parseInt(begin.value, 16).toString(2), 12)
+        data.value.pc.default = false
+        data.value.pc.changed = true
         editor.value = false
         current.value = { logic: "", micros: [] }
         current.value.logic = "Start"
         current.value.micros.push("S &#10229; 1")
+        current.value.micros.push(`PC &#10229; ${begin.value}`)
         instruction.value = null
         breadAddr.value = []
     }
@@ -90,7 +99,9 @@ export const useArch = () => {
             tr: { ...data.value.tr, changed: false, ld: false, inr: false, clr: false },
             outr: { ...data.value.outr, changed: false, ld: false },
             sc: { ...data.value.sc, changed: false, inr: false, clr: false },
-            bus: { ...data.value.bus, changed: false }
+            decode: { ...data.value.decode, changed: false },
+            bus: { ...data.value.bus, changed: false },
+            clk: false
         }
     }
 
@@ -125,5 +136,5 @@ export const useArch = () => {
         return num
     }
 
-    return { set, breadAddr, editor, asm, current, data, examplesInput, instruction, auto, reset, bitColor, addZero, sigColor, textColor, getColor, busColor, clear, setup }
+    return { set, breadAddr, editor, asm, current, data, examplesInput, instruction, auto, begin, reset, bitColor, addZero, sigColor, textColor, getColor, busColor, clear, setup }
 }

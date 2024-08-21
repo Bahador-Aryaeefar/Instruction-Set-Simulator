@@ -15,17 +15,17 @@
             </div>
             <div class="flex border-t-[0.5rem] border-arch-black">
                 <button @click="useArch().setup()" title="reset"
-                    class="shrink-0 text-[3rem] py-5 font-bold w-1/3 text-center overflow-hidden bg-arch-dark hover:bg-red-700">
+                    class="shrink-0 text-[3rem] py-5 font-bold w-1/3 text-center overflow-hidden bg-arch-dark hover:bg-red-400">
                     <img class="h-16 mx-auto" src="/icons/reset.svg" alt="">
                 </button>
                 <button @click="autoAction" title="auto clock"
-                    class="shrink-0 text-[3rem] py-5 font-bold w-1/3 text-center border-x-[0.5rem] border-arch-black overflow-hidden  hover:bg-red-700"
-                    :class="auto ? 'bg-red-700' : 'bg-arch-dark'">
-                    <img v-if="auto" class="h-16 mx-auto" src="/icons/stop.svg" alt="">
-                    <img v-else class="h-16 mx-auto" src="/icons/auto.svg" alt="">
+                    class="shrink-0 text-[3rem] py-5 font-bold w-1/3 text-center border-x-[0.5rem] border-arch-black overflow-hidden "
+                    :class="auto ? 'bg-red-700' : 'bg-arch-dark  hover:bg-red-400'">
+                    <img :class="auto ? '' : 'hidden'" class="h-16 mx-auto" src="/icons/stop.svg" alt="">
+                    <img :class="auto ? 'hidden' : ''" class="h-16 mx-auto" src="/icons/auto.svg" alt="">
                 </button>
                 <button @click="pulse" title="pulse"
-                    class="shrink-0 text-[3rem] py-5 font-bold w-1/3 text-center overflow-hidden bg-arch-dark hover:bg-red-700">
+                    class="shrink-0 text-[3rem] py-5 font-bold w-1/3 text-center overflow-hidden bg-arch-dark hover:bg-red-400">
                     <img class="h-16 mx-auto" src="/icons/pulse.svg" alt="">
                 </button>
             </div>
@@ -39,16 +39,17 @@
 
             <div
                 class="max-h-[40rem] overflow-y-scroll bg-arch-gray border-[0.5rem] border-arch-black relative font-bold leading-[4rem] text-[2.25rem] text-arch-white whitespace-nowrap rounded-b-lg">
-                <div v-for="(item, index) in set" class="flex text-[2.5rem]  border-arch-black"
+                <div v-for="(item, index) in set" class="flex text-[2.25rem]  border-arch-black"
                     :class="index ? 'border-t-[0.5rem]' : ''">
                     <div title="set break point" @click="addBreak(item.num)"
-                        class="w-[6.5rem] flex items-center justify-center cursor-pointer hover:bg-red-700 text-white shrink-0"
-                        :class="breadAddr[item.num] ? 'bg-red-700' : ' bg-arch-dark'">
+                        class="w-[6.5rem] flex items-center justify-center cursor-pointer text-white shrink-0"
+                        :class="breadAddr[item.num] ? 'bg-red-700' : ' bg-arch-dark hover:bg-red-400'">
                         {{ addZero(item.num.toString(16), 3).toUpperCase() }}
                     </div>
                     <div :ref="(el) => refs[item.num] = el"
                         class="text-white grow py-4 px-6 border-x-[0.5rem] border-arch-black"
                         :class="(instruction && parseInt(instruction, 2) == item.num) ? 'bg-red-700' : 'bg-arch-gray'">
+                        {{ item.label ? `${item.label}, ` : '' }}
                         {{ item.inst.join(" ") }}
                     </div>
                 </div>
@@ -61,17 +62,18 @@
 
             <div
                 class="bg-arch-gray border-[0.5rem] border-arch-black overflow-auto relative font-bold leading-[4rem] text-[2.25rem] text-arch-white whitespace-nowrap">
-                <div v-for="(item, index) in (current.micros[0] ? current.micros : ['-'])" v-html="item" :class="index ? 'border-t-[0.5rem]' : ''"
-                    class="text-center text-[2.5rem] bg-blue-300 text-red-700 border-arch-black py-4">
+                <div v-for="(item, index) in (current.micros[0] ? current.micros : ['-'])" v-html="item"
+                    :class="index ? 'border-t-[0.5rem]' : ''"
+                    class="text-center text-[2.25rem] bg-blue-300 text-red-700 border-arch-black py-4">
                 </div>
             </div>
 
             <div class="flex border-arch-black border-t-0 border-[0.5rem] text-[2.5rem] font-bold rounded-b-lg">
                 <div
-                    class="text-white font-bold py-4 text-center flex items-center justify-center border-r-[0.5rem] border-arch-black px-4 pb-5 bg-yellow-700">
+                    class="text-white font-bold py-4 text-center flex items-center justify-center border-r-[0.5rem] border-arch-black px-6 pb-5 bg-yellow-700">
                     Logic
                 </div>
-                <div class="bg-arch-gray grow flex items-center px-4 text-white" v-html="current.logic || '-'"></div>
+                <div class="bg-arch-gray grow flex items-center px-6 text-white" v-html="current.logic || '-'"></div>
             </div>
         </div>
 
@@ -87,7 +89,7 @@
 
 
             <button @click="enter"
-                class="text-[3rem] py-4 font-bold w-full text-center border-[0.5rem] border-arch-black border-t-0 rounded-b-lg overflow-hidden bg-arch-dark hover:bg-red-700">
+                class="text-[3rem] py-4 font-bold w-full text-center border-[0.5rem] border-arch-black border-t-0 rounded-b-lg overflow-hidden bg-arch-dark hover:bg-red-400">
                 Enter
             </button>
         </div>
@@ -132,6 +134,7 @@ const enter = () => {
 const pulse = () => {
     clear()
     current.value = { logic: "", micros: [] }
+    data.value.clk = true
 
     if (data.value.s.value == "0") return
 
@@ -139,7 +142,7 @@ const pulse = () => {
         current.value.logic += "R"
         switch (t.value) {
             case 0:
-                current.value.logic += "T<sub>0</sub>"
+                current.value.logic = "T<sub>0</sub>" + current.value.logic
                 current.value.micros.push("AR &#10229; 0")
                 current.value.micros.push("TR &#10229; PC")
 
@@ -157,7 +160,7 @@ const pulse = () => {
                 data.value.bus.default = false
                 break
             case 1:
-                current.value.logic += "T<sub>1</sub>"
+                current.value.logic = "T<sub>1</sub>" + current.value.logic
                 current.value.micros.push("M[AR] &#10229; TR")
                 current.value.micros.push("PC &#10229; 0")
 
@@ -176,7 +179,7 @@ const pulse = () => {
                 data.value.pc.clr = true
                 break
             case 2:
-                current.value.logic += "T<sub>1</sub>"
+                current.value.logic = "T<sub>1</sub>" + current.value.logic
                 current.value.micros.push("PC &#10229; PC + 1")
                 current.value.micros.push("IEN &#10229; 0")
                 current.value.micros.push("R &#10229; 0")
@@ -208,7 +211,7 @@ const pulse = () => {
                 instruction.value = data.value.pc.value
                 refs.value[parseInt(instruction.value, 2)].scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth", })
 
-                current.value.logic += "T<sub>0</sub>"
+                current.value.logic = "T<sub>0</sub>" + current.value.logic
                 current.value.micros.push("AR &#10229; PC")
 
                 data.value.ar.value = data.value.pc.value
@@ -221,10 +224,9 @@ const pulse = () => {
                 data.value.bus.default = false
                 break
             case 1:
-                current.value.logic += "T<sub>1</sub>"
+                current.value.logic = "T<sub>1</sub>" + current.value.logic
                 current.value.micros.push("IR &#10229; M[AR]")
                 current.value.micros.push("PC &#10229; PC + 1")
-                current.value.micros.push("D0...D7 &#10229; Decode IR(12-14)")
 
                 data.value.ir.value = (data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2))?.value ?? "0000000000000000")
                 data.value.ir.default = false
@@ -242,9 +244,10 @@ const pulse = () => {
                 data.value.pc.inr = true
                 break
             case 2:
-                current.value.logic += "T<sub>2</sub>"
+                current.value.logic = "T<sub>2</sub>" + current.value.logic
                 current.value.micros.push("AR &#10229; IR(0-11)")
                 current.value.micros.push("I &#10229; IR(15)")
+                current.value.micros.push("D0...D7 &#10229; Decode IR(12-14)")
 
                 data.value.ar.value = data.value.ir.value.slice(4, 16)
                 data.value.ar.default = false
@@ -257,6 +260,39 @@ const pulse = () => {
                 data.value.i.value = data.value.ir.value.slice(0, 1)
                 data.value.i.default = false
                 data.value.i.changed = true
+
+                console.log(parseInt(data.value.ir.value.slice(1, 4), 2));
+
+                switch (parseInt(data.value.ir.value.slice(1, 4), 2)) {
+                    case 0:
+                        data.value.decode.value = "00000001"
+                        break
+                    case 1:
+                        data.value.decode.value = "00000010"
+                        break
+                    case 2:
+                        data.value.decode.value = "00000100"
+                        break
+                    case 3:
+                        data.value.decode.value = "00001000"
+                        break
+                    case 4:
+                        data.value.decode.value = "00010000"
+                        break
+                    case 5:
+                        data.value.decode.value = "00100000"
+                        break
+                    case 6:
+                        data.value.decode.value = "01000000"
+                        break
+                    case 7:
+                        data.value.decode.value = "10000000"
+                        break
+                    default:
+                        data.value.decode.value = "00000000"
+                }
+                data.value.decode.default = false
+                data.value.decode.changed = true
 
                 break
             default:
@@ -271,7 +307,7 @@ const pulse = () => {
                     if (data.value.i.value == '1') {
                         current.value.logic += "I"
                         if (t.value = 3) {
-                            current.value.logic += "T<sub>3</sub>"
+                            current.value.logic = "T<sub>3</sub>" + current.value.logic
                             switch (b.value) {
                                 case 64:
                                     current.value.logic += "B<sub>6</sub>"
@@ -357,7 +393,7 @@ const pulse = () => {
                     else {
                         current.value.logic += "I'"
                         if (t.value = 3) {
-                            current.value.logic += "T<sub>3</sub>"
+                            current.value.logic = "T<sub>3</sub>" + current.value.logic
                             let temp
                             switch (b.value) {
                                 case 1:
@@ -516,7 +552,7 @@ const pulse = () => {
                 else {
                     // current.value.logic += "D<sub>7</sub>'"
                     if (t.value == 3) {
-                        current.value.logic += "T<sub>3</sub>"
+                        current.value.logic = "T<sub>3</sub>" + current.value.logic
                         if (data.value.i.value == '1') {
                             current.value.logic += "I"
                             current.value.micros.push("AR &#10229; M[AR]")
@@ -541,7 +577,7 @@ const pulse = () => {
                                 current.value.logic += "D<sub>0</sub>"
                                 switch (t.value) {
                                     case 4:
-                                        current.value.logic += "T<sub>4</sub>"
+                                        current.value.logic = "T<sub>4</sub>" + current.value.logic
                                         current.value.micros.push("DR &#10229; M[AR]")
 
                                         data.value.dr.value = (data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2))?.value ?? "0000000000000000")
@@ -554,7 +590,7 @@ const pulse = () => {
                                         data.value.bus.default = false
                                         break;
                                     case 5:
-                                        current.value.logic += "T<sub>5</sub>"
+                                        current.value.logic = "T<sub>5</sub>" + current.value.logic
 
                                         current.value.micros.push("AC &#10229; AC ^ DR")
                                         current.value.micros.push("SC &#10229; 0")
@@ -576,7 +612,7 @@ const pulse = () => {
                                 current.value.logic += "D<sub>1</sub>"
                                 switch (t.value) {
                                     case 4:
-                                        current.value.logic += "T<sub>4</sub>"
+                                        current.value.logic = "T<sub>4</sub>" + current.value.logic
                                         current.value.micros.push("DR &#10229; M[AR]")
 
                                         data.value.dr.value = (data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2))?.value ?? "0000000000000000")
@@ -590,7 +626,7 @@ const pulse = () => {
 
                                         break
                                     case 5:
-                                        current.value.logic += "T<sub>5</sub>"
+                                        current.value.logic = "T<sub>5</sub>" + current.value.logic
                                         current.value.micros.push("AC &#10229; AC + DR")
                                         current.value.micros.push("E &#10229; C<sub> out</sub>")
                                         current.value.micros.push("SC &#10229; 0")
@@ -622,7 +658,7 @@ const pulse = () => {
                                 current.value.logic += "D<sub>2</sub>"
                                 switch (t.value) {
                                     case 4:
-                                        current.value.logic += "T<sub>4</sub>"
+                                        current.value.logic = "T<sub>4</sub>" + current.value.logic
                                         current.value.micros.push("DR &#10229; M[AR]")
 
                                         data.value.dr.value = (data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2))?.value ?? "0000000000000000")
@@ -636,7 +672,7 @@ const pulse = () => {
 
                                         break
                                     case 5:
-                                        current.value.logic += "T<sub>5</sub>"
+                                        current.value.logic = "T<sub>5</sub>" + current.value.logic
                                         current.value.micros.push("AC &#10229; DR")
                                         current.value.micros.push("SC &#10229; 0")
 
@@ -657,7 +693,7 @@ const pulse = () => {
                                 current.value.logic += "D<sub>3</sub>"
                                 switch (t.value) {
                                     case 4:
-                                        current.value.logic += "T<sub>4</sub>"
+                                        current.value.logic = "T<sub>4</sub>" + current.value.logic
                                         current.value.micros.push("M[AR] &#10229; AC")
                                         current.value.micros.push("SC &#10229; 0")
 
@@ -680,7 +716,7 @@ const pulse = () => {
                                 current.value.logic += "D<sub>4</sub>"
                                 switch (t.value) {
                                     case 4:
-                                        current.value.logic += "T<sub>4</sub>"
+                                        current.value.logic = "T<sub>4</sub>" + current.value.logic
                                         current.value.micros.push("PC &#10229; AR")
                                         current.value.micros.push("SC &#10229; 0")
 
@@ -704,7 +740,7 @@ const pulse = () => {
                                 current.value.logic += "D<sub>5</sub>"
                                 switch (t.value) {
                                     case 4:
-                                        current.value.logic += "T<sub>4</sub>"
+                                        current.value.logic = "T<sub>4</sub>" + current.value.logic
                                         current.value.micros.push("M[AR] &#10229; PC")
 
                                         if (data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2))) data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2)).value = addZero(data.value.pc.value, 16)
@@ -716,7 +752,7 @@ const pulse = () => {
                                         data.value.bus.default = false
                                         break
                                     case 5:
-                                        current.value.logic += "T<sub>5</sub>"
+                                        current.value.logic = "T<sub>5</sub>" + current.value.logic
                                         current.value.micros.push("AR &#10229; AR + 1")
                                         current.value.micros.push("PC &#10229; AR")
                                         current.value.micros.push("SC &#10229; 0")
@@ -749,7 +785,7 @@ const pulse = () => {
                                 current.value.logic += "D<sub>6</sub>"
                                 switch (t.value) {
                                     case 4:
-                                        current.value.logic += "T<sub>4</sub>"
+                                        current.value.logic = "T<sub>4</sub>" + current.value.logic
                                         current.value.micros.push("DR &#10229; M[AR]")
 
                                         data.value.dr.value = (data.value.memory.value.find((x) => x.address == parseInt(data.value.ar.value, 2))?.value ?? "0000000000000000")
@@ -762,7 +798,7 @@ const pulse = () => {
                                         data.value.bus.default = false
                                         break
                                     case 5:
-                                        current.value.logic += "T<sub>5</sub>"
+                                        current.value.logic = "T<sub>5</sub>" + current.value.logic
                                         current.value.micros.push("DR &#10229; DR + 1")
 
                                         data.value.dr.value = (parseInt(data.value.dr.value, 2) + 1).toString(2)
@@ -775,7 +811,7 @@ const pulse = () => {
                                         data.value.dr.inr = true
                                         break
                                     case 6:
-                                        current.value.logic += "T<sub>6</sub>"
+                                        current.value.logic = "T<sub>6</sub>" + current.value.logic
                                         current.value.micros.push("M[AR] &#10229; DR")
                                         current.value.micros.push("If (DR = 0)")
                                         current.value.micros.push("Then (PC &#10229; PC + 1)")
@@ -833,7 +869,7 @@ const autoAction = () => {
                 auto.value = false
                 clearInterval(interval);
             } else pulse()
-        }, 1000 / parseInt(clock.value))
+        }, 1000 / parseFloat(clock.value))
     }
 }
 

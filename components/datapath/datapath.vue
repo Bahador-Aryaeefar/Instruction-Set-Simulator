@@ -11,23 +11,23 @@
             </div>
 
             <div class="mt-[10rem]">
-                <DatapathMemory></DatapathMemory>
+                <DatapathMemory class="z-[9]"></DatapathMemory>
 
-                <DatapathAr></DatapathAr>
+                <DatapathAr class="z-[8]"></DatapathAr>
 
-                <DatapathPc></DatapathPc>
+                <DatapathPc class="z-[7]"></DatapathPc>
 
-                <DatapathDr></DatapathDr>
+                <DatapathDr class="z-[6]"></DatapathDr>
 
-                <DatapathAc></DatapathAc>
+                <DatapathAc class="z-[5]"></DatapathAc>
 
-                <DatapathInpr></DatapathInpr>
+                <DatapathInpr class="z-[4]"></DatapathInpr>
 
-                <DatapathIr></DatapathIr>
+                <DatapathIr class="z-[3]"></DatapathIr>
 
-                <DatapathTr></DatapathTr>
+                <DatapathTr class="z-[2]"></DatapathTr>
 
-                <DatapathOutr></DatapathOutr>
+                <DatapathOutr class="z-[1]"></DatapathOutr>
 
                 <div
                     class="h-16 bg-arch-white w-full mt-[7rem] text-arch-black flex items-center justify-center text-4xl font-bold">

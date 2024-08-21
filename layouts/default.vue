@@ -1,5 +1,8 @@
 <template>
     <div>
+        <Head>
+            <title>Basic Computer Simulator</title>
+        </Head>
         <MainNavbar></MainNavbar>
         <slot />
     </div>

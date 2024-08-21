@@ -51,8 +51,8 @@
 
 
             <div class="absolute -bottom-[4.25rem] right-[2rem] flex-col flex items-center gap-1 text-3xl font-bold"
-                :class="textColor(false)">
-                <div class="w-2 h-7 rounded-b-full" :class="sigColor(false)"></div>
+                :class="textColor(data.clk)">
+                <div class="w-2 h-7 rounded-b-full" :class="sigColor(data.clk)"></div>
                 CLK
             </div>
         </div>

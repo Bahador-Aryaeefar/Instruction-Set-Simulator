@@ -1,13 +1,29 @@
 <template>
     <div class="border-r-[0.5rem] border-arch-black bg-arch-white p-4 h-full flex flex-col">
-        <div class="py-4 bg-arch-white text-[3rem] font-bold">
+        <div class="bg-arch-white text-[3rem] font-bold">
             <button @click="assemble"
-                class="block bg-arch-dark rounded-lg p-2 px-4 text-[2.25rem] font-bold text-white w-fit mx-auto mt-3 border-[0.4rem] border-arch-black">Assemble</button>
+                class="block bg-arch-dark hover:bg-red-400 rounded-lg p-3 px-4 w-full text-[2.5rem] font-bold text-black mx-auto mt-4 border-[0.4rem] border-arch-black">Assemble</button>
         </div>
-        <div class="flex justify-between mt-3 gap-4">
+        <div class="flex justify-between mt-4 border-[0.4rem] border-arch-black rounded-lg">
+            <div title="PC initial value in HEX"
+                class="bg-yellow-700 px-4 py-1 text-white border-r-[0.4rem] border-arch-black flex items-center justify-center shrink-0 text-[2.25rem] font-bold">
+                PC
+            </div>
+            <input type="text" class="grow focus:outline-none bg-arch-gray text-white text-[2.25rem] font-bold w-0 px-6"
+                v-model="begin" @input="() => { examplesInput = null }">
+            <div title="PC initial value in HEX"
+                class="px-4 py-1 bg-yellow-700 text-white border-l-[0.4rem] border-arch-black flex items-center justify-center shrink-0 text-[2.25rem] font-bold">
+                HEX
+            </div>
+        </div>
+        <div class="flex justify-between mt-4 gap-4">
             <div @click="paste" title="Paste"
                 class="bg-red-700 rounded-lg w-20 border-[0.4rem] border-arch-black flex items-center justify-center shrink-0 cursor-pointer">
                 <img class="w-14" src="/icons/paste.svg" alt="paste">
+            </div>
+            <div @click="copy" title="copy"
+                class="bg-red-700 rounded-lg w-20 border-[0.4rem] border-arch-black flex items-center justify-center shrink-0 cursor-pointer">
+                <img class="w-14" src="/icons/copy.svg" alt="paste">
             </div>
             <UiSelectInput class="w-full" :items="[
                 {
@@ -23,10 +39,10 @@
                     value: 2
                 }
             ]" placeHolder="Custom" :value="examplesInput"
-                @pick="(item) => { code = examples[item.value]; useArch().asm.value = code; examplesInput = item }">
+                @pick="(item) => { code = examples[item.value]; useArch().asm.value = code; begin = 0; examplesInput = item }">
             </UiSelectInput>
         </div>
-        <div class="bg-arch-gray border-[0.5rem] border-arch-black overflow-auto h-full relative mt-6">
+        <div class="bg-arch-gray border-[0.5rem] border-arch-black overflow-auto h-full relative mt-4">
             <ul class="font-bold flex flex-col items-end absolute top-4 left-0 bg-arch-gray w-[5rem]">
                 <li v-for="item, index in lineCount" class="leading-[4rem] text-[2.25rem] text-[#a9a9a9] text-right">{{
                     index + 1 }}.</li>
@@ -87,7 +103,7 @@ end`
 
 const { examplesInput } = useArch()
 
-const { addZero, current } = useArch()
+const { addZero, current, begin } = useArch()
 const code = ref(useArch().asm.value || examples.value[0])
 const assemble = () => {
     code.value = code.value.toUpperCase()
@@ -137,7 +153,10 @@ const assemble = () => {
             start = num
         } else {
             line.num = num
-            if (label) labels.push({ label, num })
+            if (label) {
+                labels.push({ label, num })
+                line.label = label
+            }
             line.line = index + 1
             set.push(line)
             num++
@@ -292,11 +311,21 @@ const maxLine = computed(() => Math.max(...code.value.split("\n").map(x => x.len
 const paste = async () => {
     try {
         code.value = await navigator.clipboard.readText();
-        code.value = code.value.replace(/["]/gm, '').replace(/[\r\n]+/gm, '\n')
+        code.value = code.value.replace(/["]/gm, '').replace(/[\r\n]+/gm, '\n').toUpperCase()
         useArch().asm.value = code
         examplesInput.value = null
     } catch {
         alert("Could not use the clipboard")
+    }
+
+}
+const copy = async () => {
+    try {
+        code.value = code.value.replace(/["]/gm, '').replace(/[\r\n]+/gm, '\n').toUpperCase()
+        await navigator.clipboard.writeText(code.value)
+        alert("Code copied to clipboard")
+    } catch {
+        alert("Could not copy to the clipboard")
     }
 
 }
