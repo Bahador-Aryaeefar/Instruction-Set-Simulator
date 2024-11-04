@@ -1,29 +1,23 @@
 <!-- a component for a select input -->
 <template>
-    <div @click.stop="isOpen = true" @focus="isOpen = true" @focusout="blurInput"
+    <div @focusout="blurInput"
         class="text-base flex justify-between items-center relative cursor-pointer focus:outline-none group font-bold text-white"
         :tabindex="isInput ? '-1' : '0'">
-        <input @click="isOpen = true; selectInput = ''" @focus="isOpen = true" @focusout="blurInput"
-            v-model="selectInput" @input.prevent="inputValue" :placeholder="placeHolder" :disabled="!isInput"
-            class="cursor-pointer text-[2rem] px-4 bg-red-700 rounded-lg focus:outline-none h-20 w-full placeholder:text-white pb-1 curspr-pointer border-[0.4rem] border-arch-black"
-            type="text">
+        <div @click.stop="isOpen = !isOpen">
+            <input @focus="isOpen = true" @focusout="blurInput" v-model="selectInput" @input.prevent="inputValue"
+                :placeholder="placeHolder" :disabled="!isInput"
+                class="pointer-events-none cursor-pointer text-[2rem] px-4 bg-red-700 rounded-lg focus:outline-none h-20 w-full placeholder:text-white pb-1 curspr-pointer border-[0.4rem] border-arch-black"
+                type="text">
 
-        <div @click.stop=""
-            class="absolute -top-[0.55rem] rtl:right-[1.06rem] ltr:left-[1.06rem] leading-[1.25rem] bg-white px-1 cursor-auto">
-            {{ title
-            }}</div>
-
-        <img
-            class="absolute right-3 transition-all duration-[250ms] pointer-events-none w-16"
-            :class="(isOpen) ? 'rotate-180' : ''" src="/icons/down.svg" alt="down">
-
+            <img class="absolute right-3 top-0 bottom-0 my-auto transition-all duration-[250ms] pointer-events-none w-16 z-[1]"
+                :class="(isOpen) ? 'rotate-180' : ''" src="/icons/down.svg" alt="down">
+        </div>
         <ul v-if="isOpen && items[0]" tabindex="0" @click.stop=""
             class="select z-[2] max-h-[15rem] rounded-[0.5rem] overflow-y-auto overflow-x-hidden bg-red-700 FirefoxScroll absolute top-[5.2rem] ltr:left-0 rtl:right-0 min-w-full border-[0.4rem] border-arch-black"
             style="box-shadow: 0px 16px 49px rgba(46, 33, 51, 0.12);">
 
             <template v-for="(item, index) in items" :key="index">
-                <hr v-if="index != 0"
-                    class="mx-1 border-[0] border-transparent rounded-full bg-arch-black h-1">
+                <hr v-if="index != 0" class="mx-1 border-[0] border-transparent rounded-full bg-arch-black h-1">
 
                 <li @click="pick(item)" ref="view"
                     class="h-[4rem] hover:bg-red-600 active:bg-crs-active px-4 flex items-center cursor-pointer text-[2rem]"

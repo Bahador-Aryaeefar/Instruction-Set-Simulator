@@ -97,6 +97,8 @@
 </template>
 
 <script setup>
+const toast = useToast()
+
 const { data, addZero, clear, current, set, instruction, auto, breadAddr } = useArch()
 
 const refs = ref([])
@@ -115,7 +117,7 @@ const b = computed(() => parseInt(data.value.ir.value.slice(4, 16), 2))
 
 const enter = () => {
     if (data.value.fgi.value == "1") {
-        alert("FGI flip flop has to be 0")
+        toast.addError("FGI flip flop has to be 0")
         return
     }
 
@@ -127,7 +129,7 @@ const enter = () => {
         data.value.fgi.changed = true
         data.value.fgi.default = false
     } else {
-        alert("Input has to be a number between 0 and 255")
+        toast.addError("Input has to be a number between 0 and 255")
     }
 }
 

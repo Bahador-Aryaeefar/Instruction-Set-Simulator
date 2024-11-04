@@ -60,6 +60,8 @@
 
 <script setup>
 
+const toast = useToast()
+
 const examples = ref([
     `lda num1
 add num2
@@ -115,7 +117,7 @@ const assemble = () => {
     for (let [index, line] of lines.entries()) {
         line = line.split(" ")
         if (line.length > 3) {
-            alert(`line ${index + 1}: Too many arguments`)
+            toast.addError(`line ${index + 1}: Too many arguments`)
             return
         }
 
@@ -127,24 +129,24 @@ const assemble = () => {
         }
 
         if (line.inst.length > 3 || (line.inst.length == 3 && line.inst[line.inst.length - 1] != "I")) {
-            alert(`line ${index + 1}: Too many instructions`)
+            toast.addError(`line ${index + 1}: Too many instructions`)
             return
         }
         else if (line.inst[0] == '') {
-            alert(`line ${index + 1}: No instructions`)
+            toast.addError(`line ${index + 1}: No instructions`)
             return
         }
 
         if (line.inst[0] == "ORG") {
             if (line.inst[1]) {
                 if (isNaN(parseInt(line.inst[1], 16))) {
-                    alert(`line ${index + 1}: '${line.inst[1]}' is not a HEX number`)
+                    toast.addError(`line ${index + 1}: '${line.inst[1]}' is not a HEX number`)
                     return
                 }
                 num = parseInt(line.inst[1], 16)
             }
             else {
-                alert("ORG needs a hex value")
+                toast.addError("ORG needs a hex value")
                 return
             }
         } else if (line.inst[0] == "END") {
@@ -223,7 +225,7 @@ const assemble = () => {
                     line.code = "1111000001000000"
                     break
                 default:
-                    alert(`line ${line.line}: '${line.inst[0]}' is not a valid instruction`)
+                    toast.addError(`line ${line.line}: '${line.inst[0]}' is not a valid instruction`)
                     return
             }
         }
@@ -231,7 +233,7 @@ const assemble = () => {
             let num = null
             if (line.inst[0] == "DEC" || line.inst[0] == "HEX") {
                 if (line.inst[2]) {
-                    alert(`line ${line.line}: too many instructions`)
+                    toast.addError(`line ${line.line}: too many instructions`)
                     return
                 }
                 if (line.inst[0] == "DEC" && !isNaN(parseInt(line.inst[1], 10))) {
@@ -239,12 +241,12 @@ const assemble = () => {
                 } else if (line.inst[0] == "HEX" && !isNaN(parseInt(line.inst[1], 16))) {
                     num = (parseInt(line.inst[1], 16) >>> 0).toString(2)
                 } else {
-                    alert(`line ${line.line}: '${line.inst[0]} ${line.inst[1]}' is not a valid number`)
+                    toast.addError(`line ${line.line}: '${line.inst[0]} ${line.inst[1]}' is not a valid number`)
                     return
                 }
                 if (line.inst[1][0] == '-') num = num.slice(16)
                 if (num.length > 16) {
-                    alert(`line ${line.line}: '${line.inst[1]}' is more than 'HEX FFFF'`)
+                    toast.addError(`line ${line.line}: '${line.inst[1]}' is more than 'HEX FFFF'`)
                     return
                 }
                 while (num.length < 16) num = "0" + num
@@ -258,11 +260,11 @@ const assemble = () => {
                     num = parseInt(line.inst[1], 16).toString(2)
                 }
                 else {
-                    alert(`line ${line.line}: '${line.inst[1]}' is neither a HEX number nor a label`)
+                    toast.addError(`line ${line.line}: '${line.inst[1]}' is neither a HEX number nor a label`)
                     return
                 }
                 if (num.length > 12) {
-                    alert(`line ${line.line}: '${line.inst[1]}' is more than 'HEX FFF'`)
+                    toast.addError(`line ${line.line}: '${line.inst[1]}' is more than 'HEX FFF'`)
                     return
                 }
                 while (num.length < 12) num = "0" + num
@@ -290,7 +292,7 @@ const assemble = () => {
                         line.code = "110"
                         break;
                     default:
-                        alert(`line ${line.line}: '${line.inst[0]}' is not a valid instruction`)
+                        toast.addError(`line ${line.line}: '${line.inst[0]}' is not a valid instruction`)
                         return
                 }
 
@@ -315,7 +317,7 @@ const paste = async () => {
         useArch().asm.value = code
         examplesInput.value = null
     } catch {
-        alert("Could not use the clipboard")
+        toast.addError("Could not use the clipboard")
     }
 
 }
@@ -325,7 +327,7 @@ const copy = async () => {
         await navigator.clipboard.writeText(code.value)
         alert("Code copied to clipboard")
     } catch {
-        alert("Could not copy to the clipboard")
+        toast.addError("Could not copy to the clipboard")
     }
 
 }
