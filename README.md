@@ -1,75 +1,36 @@
-# Nuxt 3 Minimal Starter
+# Instruction Set Simulator for Basic Computer
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A **web-based graphical simulator** for the **Basic Computer** as described in **Morris Mano's "Computer System Architecture"**. This simulator allows users to write, assemble, and execute assembly programs while visualizing the operation of the computer’s datapath, registers, and memory.
 
-## Setup
+## Features
 
-Make sure to install the dependencies:
+- 💻 **Graphical User Interface**: Interactive and visual representation of the basic computer’s **datapath components**, including **registers**, **ALU**, **flip-flops**, and **memory unit**.
+- ✍️ **Code Editor**: Built-in **assembly code editor** with syntax highlighting, pre-defined examples, and the ability to write, assemble, and load machine code.
+- 🔄 **Step-by-Step Simulation**: Simulate execution of assembly programs with an adjustable clock cycle frequency, providing a cycle-by-cycle breakdown of the program’s execution.
+- 📊 **Register & Memory Display**: Real-time display of register and memory values in **hexadecimal**, **decimal**, and **binary** formats, with live updates as the simulation progresses.
+- 🚨 **Breakpoints**: Set breakpoints to pause simulation at specific clock cycles, enabling debugging and analysis of the execution process.
+- 🔄 **Input Handling**: Allows users to provide input to the **INPR register** during execution, simulating input functionality for the basic computer.
+- ⚡ **Optimized Performance**: The simulator runs efficiently, allowing users to adjust the clock speed for fast or detailed observation of the instruction cycle.
+- 🖥️ **Built with Vue.js & Nuxt.js**: The frontend is built using **Vue.js** and **Nuxt.js**, ensuring a responsive and interactive interface.
+- 📦 **Dockerized**: The application is containerized using **Docker**, enabling easy deployment and hosting on any server.
 
-```bash
-# npm
-npm install
+## Technologies
 
-# pnpm
-pnpm install
+- **Vue.js** & **Nuxt.js** (Frontend framework)
+- **Tailwind CSS** (Styling)
+- **Docker** (Containerization)
+- **Nuxt Composables** (Global memory management)
 
-# yarn
-yarn install
+## How It Works
 
-# bun
-bun install
-```
+1. **Write Assembly Code**: Users can write or load assembly code in the built-in editor.
+2. **Assemble Code**: The editor converts assembly code into machine code and loads it into memory.
+3. **Run the Simulation**: Start the simulation and view real-time execution in the graphical interface.
+4. **Analyze Execution**: Observe each cycle of the program, the current instruction being executed, and the state of registers and memory.
+5. **Adjust Clock Speed & Set Breakpoints**: Modify clock cycle frequency and set breakpoints to pause the simulation at specific points for debugging.
 
-## Development Server
+## Usage
 
-Start the development server on `http://localhost:3000`:
+- Navigate the interface to write, assemble, and simulate assembly programs.
+- Set breakpoints to pause and inspect the state of the simulation at any point.
 
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
