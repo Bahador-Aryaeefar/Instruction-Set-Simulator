@@ -34,3 +34,11 @@ A **web-based graphical simulator** for the **Basic Computer** as described in *
 - Navigate the interface to write, assemble, and simulate assembly programs.
 - Set breakpoints to pause and inspect the state of the simulation at any point.
 
+
+## Running with Docker
+
+```bash
+docker compose up -d --build
+```
+
+The app is served at http://localhost:3000. Set `PORT` to publish it on a different host port (e.g. `PORT=8080 docker compose up -d`). Stop it with `docker compose down`.
